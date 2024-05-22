@@ -16,8 +16,9 @@
         querySnapshot.forEach((doc) => {
             items.push(doc.data());
         });
-
+        items.reverse();
         $movies = [...items];
+        
     });
 
     // Obtener lista de series de firebase
@@ -28,7 +29,7 @@
         querySnapshot.forEach((doc) => {
             items.push(doc.data());
         });
-
+        items.reverse();
         $series = [...items];
     });
 
@@ -40,7 +41,7 @@
         querySnapshot.forEach((doc) => {
             items.push(doc.data());
         });
-
+        items.reverse();
         $juegos = [...items];
     });
 
