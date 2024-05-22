@@ -80,8 +80,8 @@
   
   <div class="social-buttons">
     <div class="social-button"></div>
-    <div class="social-button"><img src="path-to-meta-logo.png" alt="Meta" /></div>
-    <div class="social-button"><img src="path-to-apple-logo.png" alt="Apple" /></div>
+    <div class="social-button"></div>
+    <div class="social-button"></div>
   </div>
   
   <button class="login-button">Log in</button>
