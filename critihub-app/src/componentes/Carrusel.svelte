@@ -9,7 +9,7 @@
     import 'swiper/css/pagination';
 
     export let items = [];
-    export let categoria = [];
+    export let categoria = '';
 
     let swiperContainer;
     let nextButton;
@@ -75,8 +75,8 @@
                     <div class="movie-box">
                         <img src={item.image} alt="poster" class="movie-box-img">
                         <div class="box-text">
-                            <h2 class="movie-title">{item.title}</h2>
-                            <span class="movie-type">Action</span>
+                            <h2 class="movie-title">{item.titulo}</h2>
+                            <span class="movie-type">{item.sinopsis}</span>
                             <a href={`${categoria}/${item.id}`} class="watch-btn play-btn">
                                 <i class='bx bx-play' ></i>
                             </a>

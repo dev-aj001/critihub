@@ -2,127 +2,49 @@
 
 <script>
     // Componentes
-    import Carrusel from "../componentes/Carrusel.svelte";    
+    import Carrusel from "../componentes/Carrusel.svelte"; 
+    import { db } from "$lib/firebase.js";   
+    import { movies, series, juegos } from "$lib/stores.js";
 
-    const movies = [
-        {
-        id: 1,
-        title: 'Inception',
-        rating: '8.8',
-        image: 'img/popular-movie-1.jpg'
-        },
-        {
-        id: 2,
-        title: 'The Matrix',
-        rating: '8.7',
-        image: 'img/popular-movie-4.jpg'
-        },
-        {
-        id: 3,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-5.jpg'
-        },
-        {
-        id: 4,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-6.jpg'
-        },
-        {
-        id: 5,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-7.jpg'
-        },
-        {
-        id: 6,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-8.jpg'
-        }
-    ];
+    import { collection, query, where, onSnapshot } from "firebase/firestore";
+
+    // Obtener lista de peliculas de firebase
+    const qPeliculas = query(collection(db, "Peliculas"));
+
+    const unsubscribePeliculas = onSnapshot(qPeliculas, (querySnapshot) => {
+        const items = [];
+        querySnapshot.forEach((doc) => {
+            items.push(doc.data());
+        });
+
+        $movies = [...items];
+    });
+
+    // Obtener lista de series de firebase
+    const qSeries = query(collection(db, "Series"));
+
+    const unsubscribeSeries = onSnapshot(qSeries, (querySnapshot) => {
+        const items = [];
+        querySnapshot.forEach((doc) => {
+            items.push(doc.data());
+        });
+
+        $series = [...items];
+    });
+
+    // Obtener lista de peliculas de firebase
+    const qJuegos = query(collection(db, "Juegos"));
+
+    const unsubscribeJuegos = onSnapshot(qJuegos, (querySnapshot) => {
+        const items = [];
+        querySnapshot.forEach((doc) => {
+            items.push(doc.data());
+        });
+
+        $juegos = [...items];
+    });
 
     
-
-    const series = [
-        {
-        id: 1,
-        title: 'ASASDDAw',
-        rating: '8.8',
-        image: 'img/popular-movie-1.jpg'
-        },
-        {
-        id: 2,
-        title: 'The Matrix',
-        rating: '8.7',
-        image: 'img/popular-movie-4.jpg'
-        },
-        {
-        id: 3,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-5.jpg'
-        },
-        {
-        id: 4,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-6.jpg'
-        },
-        {
-        id: 5,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-7.jpg'
-        },
-        {
-        id: 6,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-8.jpg'
-        }
-    ];
-
-    const juegos = [
-        {
-        id: 1,
-        title: 'dwadawdwa',
-        rating: '8.8',
-        image: 'img/popular-movie-1.jpg'
-        },
-        {
-        id: 2,
-        title: 'The Matrix',
-        rating: '8.7',
-        image: 'img/popular-movie-4.jpg'
-        },
-        {
-        id: 3,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-5.jpg'
-        },
-        {
-        id: 4,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-6.jpg'
-        },
-        {
-        id: 5,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-7.jpg'
-        },
-        {
-        id: 6,
-        title: 'Interstellar',
-        rating: '8.6',
-        image: 'img/popular-movie-8.jpg'
-        }
-    ];
-
 </script>
 
 <section class="home contenedor">
@@ -139,11 +61,11 @@
     </div>
 </section>
 
-<Carrusel categoria="Peliculas" items={movies}/>
+<Carrusel categoria="Peliculas" items={$movies}/>
 
-<Carrusel categoria="Series" items={series}/>
+<Carrusel categoria="Series" items={$series}/>
 
-<Carrusel categoria="Juegos" items={juegos}/>
+<Carrusel categoria="Juegos" items={$juegos}/>
 
 
 
