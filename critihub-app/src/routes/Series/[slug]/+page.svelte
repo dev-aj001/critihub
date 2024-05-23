@@ -14,7 +14,7 @@
 
 <div class="detail-container contenedor">
     <!-- Image -->
-    <img src={data.image} alt="" class="detail-img">
+    <img src={data.banner} alt="" class="detail-img">
     <!-- Text -->
     <div class="detail-text">
         <h2>{data.titulo}</h2>

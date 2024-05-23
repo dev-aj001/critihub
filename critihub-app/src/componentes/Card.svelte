@@ -1,16 +1,32 @@
 <script>
     export let item = [];
     export let categoria = '';
+
+    $: colorTag = (cal) => {
+        if (cal < 2) {
+            return 'green';
+        } else if (cal >= 2.5 && cal < 4) {
+            return 'yellow';
+        } else {
+            return 'red';
+        }
+    };
+
 </script>
 
 <div class="swiper-slide">
     <div class="movie-box">
-        <img src={item.image} alt="poster" class="movie-box-img">
+        <img src={item.cover} alt="cover" class="movie-box-img">
         <div class="box-text">
-            <h2 class="movie-title">{item.titulo}</h2>
-            <span class="movie-type">{item.sinopsis}</span>
-            <a href={`${categoria}/${item.id}`} class="watch-btn play-btn">
-                <i class='bx bx-play' ></i>
+            <a href={`${categoria}/${item.id}`}>
+                <h2 class="movie-title">{item.titulo}</h2>
+            </a>
+            <span class="movie-type">{item.short_desc}</span>
+            <a href={`${categoria}/${item.id}`} class="rating-tag">
+                <div class="rating {colorTag(item.rating)}">
+                    <h3>{item.rating}</h3>
+                    <i class='bx bxs-star'></i>
+                </div>
             </a>
         </div>
     </div>
@@ -18,26 +34,46 @@
 
 
 <style>
-    .watch-btn {
+
+    a {
+        color: var(--text-color);
+        text-decoration: none;
+    }
+
+    .rating-tag {
         display: flex;
         align-items: center;
         column-gap: 0.8rem;
-        color: var(--text-color);
+        
     }
-    .watch-btn .bx {
-        font-size: 21px;
+    .rating {
+        font-size: 15px;
         background-color: var(--main-color);
-        width: 40px;
-        height: 20px;
-        border-radius: 0.5rem;
+        width: auto;
+        height: 40px;
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 0 10px;
     }
-    .watch-btn .bx:hover {
+    .rating:hover {
         background-color: var(--hover-color);
         transform: scale(1.05);
         transition: 0.3s linear;
+    }
+
+    .green {
+        background-color: #2fcb24;
+    }
+
+    .yellow {
+        background-color: #e8bd22;
+    }
+
+    .bx {
+        font-size: 1.1rem;
     }
 
     /* Movie-box */
@@ -71,18 +107,20 @@
     }
 
     .movie-title {
-        font-size: 1.1rem;
-        font-weight: 500;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
     }
 
     .movie-type{
         font-size: 0.93rem;
+        margin-right: 30%;
     }
 
-    .play-btn {
+    .rating-tag {
         position: absolute;
-        bottom: 0.8rem;
-        right: 0.8rem;
+        bottom: 0;
+        right: 0.4rem;
     }
 
     .movie-box:hover .movie-box-img{
