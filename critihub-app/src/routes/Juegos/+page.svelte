@@ -4,4 +4,3 @@
 </script>
 
 <Grid categoria="VideoJuegos" items={$juegos}/>
-

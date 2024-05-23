@@ -1,7 +1,6 @@
 <script>
     import Grid from "../../componentes/Grid.svelte";
     import { movies } from "$lib/stores.js";
-    
 
 </script>
 
