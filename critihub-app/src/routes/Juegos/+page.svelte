@@ -3,4 +3,4 @@
     import { juegos } from "$lib/stores.js";
 </script>
 
-<Grid categoria="VideoJuegos" items={$juegos}/>
+<Grid categoria="Juegos" items={$juegos}/>
