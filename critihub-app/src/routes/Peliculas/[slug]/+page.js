@@ -1,19 +1,17 @@
 import { error } from '@sveltejs/kit';
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "$lib/firebase.js";
 
 /** @type {import('./$types').PageLoad} */
-export function load({ params }) {
-	if (params.slug === '1') {
-		return {
-			title: 'Pelicula1',
-			content: 'Welcome to our blog. Lorem ipsum dolor sit amet...'
-		};
-	}
-    if (params.slug === '2') {
-		return {
-			title: 'Pelicula2',
-			content: 'Welcome to our blog. Lorem ipsum dolor sit amet...'
-		};
-	}
-
-	error(404, 'Not found');
+export async function load({ params }) {
+	let id = params.slug;
+	const docRef = doc(db, "Peliculas", id);
+	const docSnap = await getDoc(docRef);
+	if (docSnap.exists()) {
+		console.log("Document data:", docSnap.data());
+	  } else {
+		// docSnap.data() will be undefined in this case
+		console.log("No such document!");
+		error(404,'Not Found');
+	  }
 }
