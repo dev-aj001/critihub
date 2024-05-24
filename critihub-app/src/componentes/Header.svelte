@@ -1,6 +1,6 @@
 <script>
-    import Modal from './Modal.svelte';
-    import Login from '../componentes/Modal.svelte';
+    import Modal from './Modal_Login.svelte';
+    
     import {isLoggedIn, user} from '$lib/stores';
 
     let showModal = false;

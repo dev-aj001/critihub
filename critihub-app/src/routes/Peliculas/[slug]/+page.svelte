@@ -1,14 +1,11 @@
 <script>
 	/** @type {import('./$types').PageData} */
-    import Modal from '../../../componentes/Modal.svelte';
+    //import Modal from '../../../componentes/Modal.svelte';
     let showModal = false;
 
 	export let data;
 </script>
 
-<Modal bind:showModal class="modal">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/vwYiYMxUu4o?si=Jto1kZnfCWEkpdr1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</Modal>
 
 <!-- Detail content -->
 
