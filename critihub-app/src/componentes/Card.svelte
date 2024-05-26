@@ -12,6 +12,9 @@
         }
     };
 
+    //export let tags = ['accion', 'trama']
+    let tags = Array.isArray(item.tags) ? item.tags.slice(0, 4) : [];
+
 </script>
 
 <div class="swiper-slide">
@@ -21,7 +24,11 @@
             <a href={`${categoria}/${item.id}`}>
                 <h2 class="movie-title">{item.titulo}</h2>
             </a>
-            <span class="movie-type">{item.short_desc}</span>
+            <span class="movie-type"><div class="tags">
+                {#each tags as tag}
+                    <span>{tag}</span>
+                {/each}
+            </div></span>
             <a href={`${categoria}/${item.id}`} class="rating-tag">
                 <div class="rating {colorTag(item.rating)}">
                     <h3>{item.rating}</h3>
@@ -126,6 +133,21 @@
     .movie-box:hover .movie-box-img{
         transform: scale(1.1);
         transition: 0.3s all linear;
+    }
+
+    .tags {
+        display: flex;
+        align-items: center;
+        column-gap: 8px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+        row-gap: 5px;
+    }
+
+    .tags span {
+        background-color: rgba(0, 0, 0, 0.443);
+        padding: 0 4px;
+        font-size: 12px;
     }
 
 </style>

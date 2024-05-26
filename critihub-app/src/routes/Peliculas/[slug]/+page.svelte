@@ -4,6 +4,7 @@
     let showModal = false;
 
 	export let data;
+
 </script>
 
 
@@ -25,9 +26,9 @@
         </div>
         
         <div class="tags">
-            <span>Aventura</span>
-            <span>Acción</span>
-            <span>4k</span>
+            {#each data.tags as tag}
+                <span>{tag}</span>
+            {/each}
         </div>
 
         <a href="#" class="watch-btn">

@@ -1,12 +1,21 @@
 <script>
     import Modal from './Modal_Login.svelte';
+
+    import { signOut } from "firebase/auth";
     
+    import { auth } from '$lib/firebase';
     import {isLoggedIn, user} from '$lib/stores';
 
     let showModal = false;
     let active = 1;
-    let email = '';
-    let password = '';
+
+
+    let toggleMenu = false;
+
+    const cerrarSesion = () => {
+        toggleMenu = !toggleMenu;
+        signOut(auth);
+    }
 
 </script>
 
@@ -24,9 +33,40 @@
         </div>
         <!-- Usuario -->
         {#if $isLoggedIn}
-            <a href="/Perfil" class="user">
+            <a href="#" class="user" on:click={()=>{toggleMenu = !toggleMenu}}>
                 <img src="img/user.jpg" alt="user" class="user-img">
             </a>
+            <!-- SubMenu -->
+            <div class="sub-menu-wrap" class:open-menu={toggleMenu}>
+                <div class="sub-menu">
+                    <div class="user-info">
+                        <img src="img/user.jpg" alt="">
+                        <h3>Name</h3>
+                    </div>
+                    <hr>
+                    <a href="#" class="sub-menu-link">
+                        <i class='bx bx-user'></i>
+                        <p>Configuración de perfil</p>
+                        <span>></span>
+                    </a>
+                    <a href="#" class="sub-menu-link">
+                        <i class='bx bx-cog'></i>
+                        <p>Panel de administrador</p>
+                        <span>></span>
+                    </a>
+                    <a href="#" class="sub-menu-link">
+                        <i class='bx bx-help-circle' ></i>
+                        <p>Ayuda y soporte</p>
+                        <span>></span>
+                    </a>
+                    <a href="#" class="sub-menu-link logout" on:click={cerrarSesion}>
+                        <i class='bx bx-log-out'></i>
+                        <p>Cerrar sesión</p>
+                        <span>></span>
+                    </a>
+                </div>
+            </div>
+            <!-- Fin SubMenu -->
         {:else}
             <button class="btn primary" on:click={()=>{showModal = true}}>Inicia sesión</button>
         {/if}
@@ -154,6 +194,109 @@
 
     .nav-link-title {
         font-size: 0.82rem;
+    }
+
+/*Sub menu styles*/
+.sub-menu-wrap {
+        position: absolute;
+        top: 70%;
+        right: 10%;
+        width: 320px;
+        color: #393939;
+        max-height: 0px;
+        overflow: hidden;
+        transition: max-height 0.5s;
+    }
+
+    .sub-menu {
+        background-color: #fefefe;
+        padding: 15px;
+        margin: 10px;
+        border-radius: .5rem;
+    }
+
+    .sub-menu-wrap.open-menu {
+        max-height: 400px;
+    }
+
+    .sub-menu img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
+        margin-right: 15px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .user-info h3 {
+        font-weight: 600;
+    }
+
+    .sub-menu hr {
+        border: 0;
+        height: 1px;
+        width: 100%;
+        background-color: #ccc;
+        margin: 15px 0 10px;
+        
+    }
+
+    .sub-menu-link{
+        display: flex;
+        align-items: center;
+        color: #393939;
+        margin: 15px 0;
+    }
+
+    .sub-menu-link .bx {
+        font-size: 1.5rem;
+        margin-right: 10px;
+        padding: 5px;
+        background-color: #ededed;
+        border-radius: 50%;
+    }
+
+    .sub-menu-link p {
+        width: 100%;
+        display: block;
+    }
+
+    .sub-menu-link span {
+        font-size: 22px;
+        transition: transform 0.5s;
+        
+    }
+
+    .sub-menu-link:hover span {
+        transform: translateX(5px);
+    }
+
+    .logout {
+        margin-top: 30px;
+        margin-bottom: 5px;
+    }
+
+    .sub-menu-link:hover p {
+        font-weight: 600;
+    }
+
+    @media (max-width: 1360px) {
+    /* … */
+        .sub-menu-wrap {    
+            right: 5%;
+        }
+    }
+
+    @media (max-width: 1084px) {
+    /* … */
+        .sub-menu-wrap {
+            right: 0%;
+        }
     }
 
 </style>
