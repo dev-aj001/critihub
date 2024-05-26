@@ -1,7 +1,7 @@
 <script>
   import { isLoggedIn, user, isAdmin } from "$lib/stores.js";  
   import { auth } from "$lib/firebase.js";
-  import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
+  import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithRedirect, updateProfile } from "firebase/auth";
 
 	export let showModal; // boolean
 
@@ -10,26 +10,37 @@
   let email = '';
   let password = '';
   let password2 = '';
+  let nombre = '';
 
 	$: if (dialog && showModal) dialog.showModal();
 
   let change = false;
 
   // Crear cuenta con correo
+
+  $: passCoincide = password===password2;
+
   const crearUsuario = (auth, email, password) => {
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed up 
-      showModal = false;
-      dialog.close();
-      change = false;
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
-    });
+    if(passCoincide){
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up 
+        showModal = false;
+        updateProfile(auth.currentUser, {
+          displayName: nombre
+        }).then(() => {
+          $user = auth.currentUser;
+        });
+        dialog.close();
+        change = false;
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+    }
   }
 
   //Iniciar con correo
@@ -53,7 +64,7 @@
     if (u) {
       $isLoggedIn = true;
       $user = u;
-      console.log($isLoggedIn);
+      console.log($user);
       // ...
     } else {
       $isLoggedIn = false;
@@ -64,11 +75,7 @@
   });
 
   //Inicio con google
-
   const provider = new GoogleAuthProvider();
-  
-
-
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
@@ -81,47 +88,56 @@
 	<div on:click|stopPropagation>
         
         {#if !change}
-          <h1 class="center-text">Accede a CRITIHUB</h1>
-          <p class="center-text">Ingresa con tu correo y contraseña</p>
-          <input type="email" placeholder="Correo electronico" class="input-field" bind:value={email} />
-          <input type="password" placeholder="Contraseña" class="input-field" bind:value={password} />
-          <button class="login-button" on:click={iniciarConCorreo(auth,email,password)}>Iniciar sesión</button>
-          <p class="center-text">¿No tienes una cuenta? <span on:click={()=>{change = !change}}>Crea una nueva</span>, o...</p>
+          <form action="">
+            <h1 class="center-text">Accede a CRITIHUB</h1>
+            <p class="center-text">Ingresa con tu correo y contraseña</p>
+            <input type="email" placeholder="Correo electronico" class="input-field" required bind:value={email} />
+            <input type="password" placeholder="Contraseña" class="input-field" required bind:value={password} />
+            <button class="login-button" on:click={iniciarConCorreo(auth,email,password)}>Iniciar sesión</button>
+            <p class="center-text">¿No tienes una cuenta? <span on:click={()=>{change = !change}}>Crea una nueva</span>, o...</p>
+          </form>
           
           <div class="social-buttons">
             <div class="social-button" on:click={()=>{signInWithRedirect(auth, provider)}}>
               <img src="/logos/google.svg" alt="Google"/>
-              <p>Acceder con Google</p>
+              <p>Continuar con Google</p>
             </div>
             <div class="social-button">
               <img src="/logos/meta.svg" alt="Meta" />
-              <p>Acceder con Meta</p>
+              <p>Continuar con Meta</p>
             </div>
             <div class="social-button">
               <img src="/logos/github.svg" alt="Github" />
-              <p>Acceder con Github</p>
+              <p>Continuar con Github</p>
             </div>
           </div>
         {:else}
-          <h1 class="center-text">Registrate en CRITIHUB</h1>
-          <p class="center-text">Ingresa con tu correo y contraseña</p>
-          <input type="email" placeholder="Correo electronico" class="input-field" bind:value={email} />
-          <input type="password" placeholder="Contraseña" class="input-field" bind:value={password} />
-          <input type="password" placeholder="Confirmar contraseña" class="input-field" bind:value={password2} />
-          <button class="login-button" on:click={crearUsuario(auth, email, password)}>Registrarse</button>
-          <p class="center-text">¿Ya tienes una cuenta? <span on:click={()=>{change = !change}}>Inicia sesión</span>, o...</p>
+          <form action="">
+            <h1 class="center-text">Registrate en CRITIHUB</h1>
+            <p class="center-text">Llena el formulario</p>
+            <input type="text" placeholder="Nombre" class="input-field" required bind:value={nombre} />
+            <input type="email" placeholder="Correo electronico" class="input-field" required bind:value={email} />
+            <input type="password" placeholder="Contraseña" class="input-field" required bind:value={password} />
+            <input type="password" placeholder="Confirmar contraseña" class="input-field" required bind:value={password2} />
+            {#if !passCoincide}
+              <p style="color: brown;">Las contraseñas no coinciden!</p>
+            {/if}
+            <button class="login-button" on:click={crearUsuario(auth, email, password)}>Registrarse</button>
+            <p class="center-text">¿Ya tienes una cuenta? <span on:click={()=>{change = !change}}>Inicia sesión</span>, o...</p>
+          </form>  
+
           <div class="social-buttons">
             <div class="social-button">
               <img src="/logos/google.svg" alt="Google"/>
-              <p>Acceder con Google</p>
+              <p>Continuar con Google</p>
             </div>
             <div class="social-button">
               <img src="/logos/meta.svg" alt="Meta" />
-              <p>Acceder con Meta</p>
+              <p>Continuar con Meta</p>
             </div>
             <div class="social-button">
               <img src="/logos/github.svg" alt="Github" />
-              <p>Acceder con Github</p>
+              <p>Continuar con Github</p>
             </div>
           </div>
         {/if}

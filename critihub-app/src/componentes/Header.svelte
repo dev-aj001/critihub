@@ -9,6 +9,8 @@
     let showModal = false;
     let active = 1;
 
+    $: userPhoto = ($user && $user.photoURL) ? $user.photoURL : 'img/user.jpg';
+    $: userName = ($user && $user.displayName) ? $user.displayName : 'nombre sin definir';
 
     let toggleMenu = false;
 
@@ -34,14 +36,14 @@
         <!-- Usuario -->
         {#if $isLoggedIn}
             <a href="#" class="user" on:click={()=>{toggleMenu = !toggleMenu}}>
-                <img src="img/user.jpg" alt="user" class="user-img">
+                <img src={userPhoto} alt="user" class="user-img">
             </a>
             <!-- SubMenu -->
             <div class="sub-menu-wrap" class:open-menu={toggleMenu}>
                 <div class="sub-menu">
                     <div class="user-info">
-                        <img src="img/user.jpg" alt="">
-                        <h3>Name</h3>
+                        <img src={userPhoto} alt="">
+                        <h3>{userName}</h3>
                     </div>
                     <hr>
                     <a href="#" class="sub-menu-link">
