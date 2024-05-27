@@ -1,9 +1,12 @@
 <script>
 	/** @type {import('./$types').PageData} */
+    //import Modal from '../../../componentes/Modal.svelte';
     let showModal = false;
 
 	export let data;
+
 </script>
+
 
 <!-- Detail content -->
 
@@ -23,9 +26,9 @@
         </div>
         
         <div class="tags">
-            <span>Aventura</span>
-            <span>Acción</span>
-            <span>4k</span>
+            {#each data.tags as tag}
+                <span>{tag}</span>
+            {/each}
         </div>
 
         <a href="#" class="watch-btn">
@@ -33,6 +36,11 @@
             <span>Mira el trailer!</span>
         </a>
     </div>
+</div>
+
+<div class="contenedor about-content">
+    <h2>{data.titulo}</h2>
+    <p>{data.sinopsis}</p>
 </div>
 
 <style>
@@ -89,5 +97,22 @@
         padding: 0 4px;
     }
 
+    /*Descripcion*/
+
+    .about-content{
+        margin-top: 2rme;
+    }
+
+    .about-content h2 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--main-color);
+    }
+
+    .about-content p {
+        max-width: 600px;
+        font-size: 0.93rem;
+        margin: 10px 0;
+    }
 
 </style>

@@ -46,17 +46,17 @@
                         <h3>{userName}</h3>
                     </div>
                     <hr>
-                    <a href="#" class="sub-menu-link">
+                    <a href="/Perfil" class="sub-menu-link" on:click={()=>{toggleMenu = !toggleMenu}}>
                         <i class='bx bx-user'></i>
                         <p>Configuración de perfil</p>
                         <span>></span>
                     </a>
-                    <a href="#" class="sub-menu-link">
+                    <a href="/Administrador" class="sub-menu-link" on:click={()=>{toggleMenu = !toggleMenu}}>
                         <i class='bx bx-cog'></i>
                         <p>Panel de administrador</p>
                         <span>></span>
                     </a>
-                    <a href="#" class="sub-menu-link">
+                    <a href="/Ayuda" class="sub-menu-link" on:click={()=>{toggleMenu = !toggleMenu}}>
                         <i class='bx bx-help-circle' ></i>
                         <p>Ayuda y soporte</p>
                         <span>></span>

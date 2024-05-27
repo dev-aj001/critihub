@@ -38,6 +38,11 @@
     </div>
 </div>
 
+<div class="contenedor about-content">
+    <h2>{data.titulo}</h2>
+    <p>{data.sinopsis}</p>
+</div>
+
 <style>
     .detail-container {
         position: relative;
@@ -92,5 +97,22 @@
         padding: 0 4px;
     }
 
+    /*Descripcion*/
+
+    .about-content{
+        margin-top: 2rme;
+    }
+
+    .about-content h2 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--main-color);
+    }
+
+    .about-content p {
+        max-width: 600px;
+        font-size: 0.93rem;
+        margin: 10px 0;
+    }
 
 </style>
