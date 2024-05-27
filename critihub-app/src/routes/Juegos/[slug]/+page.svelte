@@ -38,10 +38,18 @@
     </div>
 </div>
 
+<!-- Descripcion -->
 <div class="contenedor about-content">
     <h2>{data.titulo}</h2>
     <p>{data.sinopsis}</p>
 </div>
+<!-- Fin descripcion -->
+
+<!-- Caja de comentarios -->
+
+<div class="contenedor comentarios"> </div>
+
+<!-- Fin caja comentarios -->
 
 <style>
     .detail-container {
@@ -113,6 +121,12 @@
         max-width: 600px;
         font-size: 0.93rem;
         margin: 10px 0;
+    }
+
+    .comentarios {
+        margin-top: 2rem;
+        height: 100px;
+        background-color: aliceblue;
     }
 
 </style>
