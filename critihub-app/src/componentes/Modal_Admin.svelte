@@ -109,7 +109,7 @@ const MSJRe=()=>{
 
       <div class="row">
       <div class="col-md-6">
-      <div class="form-group mb-4">
+      <div class="">
       <label class="form-label" for="registerPassword">Edad</label>
       <input type="text" id="text" class="form-control" bind:value={edad} required />
       
