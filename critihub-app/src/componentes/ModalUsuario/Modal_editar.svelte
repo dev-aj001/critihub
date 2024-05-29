@@ -1,114 +1,86 @@
 <script>
-    import { app } from "$lib/firebase";
+    import { db } from "$lib/firebase";
     import {
         getFirestore,
         collection,
         query,
-        where,
-        onSnapshot,
         getDocs,
-        addDoc,
+        onSnapshot,
         doc,
         getDoc,
+        updateDoc,
+
     } from "firebase/firestore";
-    import Swal from "sweetalert2";
-    import { createUserWithEmailAndPassword } from "firebase/auth";
-    import {
-        getAuth,
-        signInWithEmailAndPassword,
-        AuthErrorCodes,
-    } from "firebase/auth";
 
-    const db = getFirestore(app);
-    // optener el servicio de Authentication
-    const auth = getAuth(app);
-
-    export let showModal; // boolean
-
+    
+    export let selected;
+    export let showModalp; // boolean
     let dialog; // HTMLDialogElement
-    let change = false;
-    // Función para obtener los datos de Firestore
+
     let email = "";
     let password = "";
     let nombre = "";
     let edad = "";
     let genero = "";
 
-    let loginError = "";
 
-    $: if (dialog && showModal) dialog.showModal();
 
-    const handleSubmit = async () => {
-        try {
-            const create = await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password,
-            );
-            let id = create.user.uid;
-            await addDoc(collection(db, "usuariosnew"), {
-                uid: id,
+   $: if (dialog && showModalp) dialog.showModal();
+
+
+  // Función para obtener el documento
+  async function obtenerDocumento() {
+    try {
+   const docSnap = await getDoc(doc(db, 'usuariosnew', "CEQEu0a2ZTXGeXTc35tcmHrHGod2"),{
+        
                 nombre: nombre,
                 email: email,
                 password: password,
                 edad: edad,
                 genero: genero,
-                rol: "usuario",
-                createdAt: new Date(),
-            });
+    });
+        console.log("Documento encontrado:", docSnap.data());
+      
+      
+    } catch (error) {
+      console.error("Error al obtener el documento:", error);
+    }
+  }
 
-            dialog.close();
-            MSJR();
-            console.log("usuario registrado");
-        } catch (error) {
-            MSJRe();
-            console.error(error);
-        }
-    };
-    const MSJR = () => {
-        Swal.fire({
-            title: "Usuario Registrado!",
-            text: "Gracias por registrarse a crithub",
-            icon: "success",
-            allowOutsideClick: false, // Evita que el usuario cierre el cuadro de diálogo haciendo clic fuera de él
-            showConfirmButton: true,
-            allowEnterKey: true,
+obtenerDocumento()
+    const actualizar = async () => {
+        try{
+        await updateDoc(doc(db, "usuariosnew",selected),{
+                nombre: nombre,
+                password: password,
+                edad: edad,
+                genero: genero,
         });
+         dialog.close();
+            console.log("Usuario actualizado")
+         }catch{
+        console.log("Error al actualizar")
+    }
     };
-
-    const MSJRe = () => {
-        Swal.fire({
-            title: "Usuario Ya Registrado!",
-            text: "Verifique sus datos!",
-            icon: "error",
-        });
-    };
+    
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
     bind:this={dialog}
-    on:close={() => (showModal = false)}
+    on:close={() => (showModalp = false)}
     on:click|self={() => dialog.close()}
 >
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div on:click|stopPropagation>
-        <div class="modal-dialog d-flex justify-content-center">
-            <div class="modal-content w-75">
+    <div class= "contenedor">
+         <div class="contenedor">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel2">
-                        Agregar Usuario
-                    </h5>
-                    <button
-                        type="button"
-                        data-mdb-button-init
-                        data-mdb-ripple-init
-                        class="btn-close"
-                        data-mdb-dismiss="modal"
-                        aria-label="Close"
-                    ></button>
+                       Modificar Usuario
+                    </h5>   
                 </div>
-                <div class="modal-body p-4">
+                <div class="modal-body">
                     <form>
                         <!-- Name input -->
                         <div class="form-group">
@@ -116,7 +88,6 @@
                             <input
                                 type="text"
                                 id="text"
-                                name="texte"
                                 bind:value={nombre}
                                 required
                             />
@@ -126,25 +97,21 @@
                             <input
                                 type="email"
                                 id="email"
-                                name="email"
-                                bind:value={email}
-                                required
+                                value={email}
+                                disabled
                             />
                         </div>
                         <div class="form-group">
                             <label for="email">Contraseña</label>
                             <input
                                 type="password"
-                                id="email"
-                                name="email"
+                                id="password"
                                 bind:value={password}
                                 required
                             />
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="">
+                        <div class="row">        
                                     <label
                                         class="form-label"
                                         for="registerPassword">Edad</label
@@ -156,10 +123,7 @@
                                         bind:value={edad}
                                         required
                                     />
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
+                                <div class="form-group">
                                     <label
                                         class="form-label"
                                         for="registerRepeatPassword"
@@ -181,25 +145,27 @@
                                         >
                                     </select>
                                 </div>
-                            </div>
+                           
                         </div>
                         <div class="form-group">
                             <!-- Submit button -->
-                            <button on:click={handleSubmit} class="login-button"
-                                >Registrar</button
+                            <button on:click={actualizar} class="login-button"
+                                >Actualizar</button
                             >
                         </div>
                     </form>
                 </div>
-            </div>
+            
         </div>
+
+    </div>
+
+       
     </div>
 </dialog>
 
 <style>
-    .center-text {
-        text-align: center;
-    }
+    
     dialog {
         margin: auto;
         max-width: 32em;
@@ -236,11 +202,7 @@
             opacity: 1;
         }
     }
-    button {
-        display: block;
-    }
-
-    .form-group label {
+     .form-group label {
         display: block;
         font-weight: bold;
         margin-bottom: 0.5rem;
@@ -266,6 +228,6 @@
         background-color: #f25c05;
     }
     .form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
 </style>
