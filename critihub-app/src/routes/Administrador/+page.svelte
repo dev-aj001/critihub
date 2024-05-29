@@ -5,24 +5,8 @@
   import Usuarios from "../Administrador/Usuarios_crud.svelte";
   import Publicaciones from "../Administrador/Publicaciones_crud.svelte";
 
-  let nombre = $user.displayName;
 
   let activo = 2;
-
-  const cambiarNombre = (n) => {
-      updateProfile(auth.currentUser, {
-      displayName: n
-      }).then(() => {
-      // Profile updated!
-      // ...
-      console.log("Nombre actualizado");
-      }).catch((error) => {
-      // An error occurred
-      // ...
-      });
-  }
-
-  $:console.log(nombre);
 
 </script>
 
