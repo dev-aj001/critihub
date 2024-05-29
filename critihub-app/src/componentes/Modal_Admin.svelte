@@ -1,191 +1,246 @@
 <script>
-	import { app }  from '$lib/firebase';
-    import { getFirestore, collection,query, where, onSnapshot, getDocs, addDoc,doc,getDoc } from "firebase/firestore";
-    import Swal from 'sweetalert2'
-    import {createUserWithEmailAndPassword } from "firebase/auth";
-    import { getAuth, signInWithEmailAndPassword, AuthErrorCodes } from 'firebase/auth';
-   
+    import { app } from "$lib/firebase";
+    import {
+        getFirestore,
+        collection,
+        query,
+        where,
+        onSnapshot,
+        getDocs,
+        addDoc,
+        doc,
+        getDoc,
+    } from "firebase/firestore";
+    import Swal from "sweetalert2";
+    import { createUserWithEmailAndPassword } from "firebase/auth";
+    import {
+        getAuth,
+        signInWithEmailAndPassword,
+        AuthErrorCodes,
+    } from "firebase/auth";
+
     const db = getFirestore(app);
-    // optener el servicio de Authentication 
+    // optener el servicio de Authentication
     const auth = getAuth(app);
-	
-	
-	export let showModal; // boolean
 
-	let dialog; // HTMLDialogElement
-	 let change = false;
-	// Función para obtener los datos de Firestore
- let email = '';
-    let password = '';
-    let nombre = '';
-    let edad = '';
-    let genero = '';
+    export let showModal; // boolean
 
-    let loginError = '';
+    let dialog; // HTMLDialogElement
+    let change = false;
+    // Función para obtener los datos de Firestore
+    let email = "";
+    let password = "";
+    let nombre = "";
+    let edad = "";
+    let genero = "";
 
-	$: if (dialog && showModal) dialog.showModal();
+    let loginError = "";
 
-	const handleSubmit = async () => {
+    $: if (dialog && showModal) dialog.showModal();
+
+    const handleSubmit = async () => {
         try {
-             const create = await createUserWithEmailAndPassword(auth, email, password)
-            let id = create.user.uid
-            await addDoc(collection(db, "usuariosnew"), 
-            {         
+            const create = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password,
+            );
+            let id = create.user.uid;
+            await addDoc(collection(db, "usuariosnew"), {
                 uid: id,
-                nombre:nombre,
+                nombre: nombre,
                 email: email,
                 password: password,
                 edad: edad,
                 genero: genero,
-                rol:"usuario",
+                rol: "usuario",
                 createdAt: new Date(),
-               
-     	});
-		
-             dialog.close();
+            });
+
+            dialog.close();
             MSJR();
-            console.log("usuario registrado")
-             
+            console.log("usuario registrado");
         } catch (error) {
-                MSJRe();
-             console.error(error);
+            MSJRe();
+            console.error(error);
         }
     };
-const MSJR=()=>{
+    const MSJR = () => {
+        Swal.fire({
+            title: "Usuario Registrado!",
+            text: "Gracias por registrarse a crithub",
+            icon: "success",
+            allowOutsideClick: false, // Evita que el usuario cierre el cuadro de diálogo haciendo clic fuera de él
+            showConfirmButton: true,
+            allowEnterKey: true,
+        });
+    };
 
-    Swal.fire({
-    title: "Usuario Registrado!",
-    text: "Gracias por registrarse a crithub",
-    icon: "success",
-    allowOutsideClick: false, // Evita que el usuario cierre el cuadro de diálogo haciendo clic fuera de él
-        showConfirmButton: true,
-        allowEnterKey: true,
-       
-    });
-}
-
-const MSJRe=()=>{
-    Swal.fire({
-    title: "Usuario Ya Registrado!",
-    text: "Verifique sus datos!",
-    icon: "error"
-    });
-}
-
-
+    const MSJRe = () => {
+        Swal.fire({
+            title: "Usuario Ya Registrado!",
+            text: "Verifique sus datos!",
+            icon: "error",
+        });
+    };
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
-	bind:this={dialog}
-	on:close={() => (showModal = false)}
-	on:click|self={() => dialog.close()}
+    bind:this={dialog}
+    on:close={() => (showModal = false)}
+    on:click|self={() => dialog.close()}
 >
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div on:click|stopPropagation>
-		<div class="modal-dialog d-flex justify-content-center">
-        <div class="modal-content w-75">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel2">Agregar Usuario</h5>
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div on:click|stopPropagation>
+        <div class="modal-dialog d-flex justify-content-center">
+            <div class="modal-content w-75">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">
+                        Agregar Usuario
+                    </h5>
+                    <button
+                        type="button"
+                        data-mdb-button-init
+                        data-mdb-ripple-init
+                        class="btn-close"
+                        data-mdb-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form>
+                        <!-- Name input -->
+                        <div class="form-group">
+                            <label for="email">Nombre Completro</label>
+                            <input
+                                type="text"
+                                id="text"
+                                name="texte"
+                                bind:value={nombre}
+                                required
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                bind:value={email}
+                                required
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Contraseña</label>
+                            <input
+                                type="password"
+                                id="email"
+                                name="email"
+                                bind:value={password}
+                                required
+                            />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="">
+                                    <label
+                                        class="form-label"
+                                        for="registerPassword">Edad</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="text"
+                                        class="form-control"
+                                        bind:value={edad}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label
+                                        class="form-label"
+                                        for="registerRepeatPassword"
+                                        >Genero</label
+                                    >
+                                    <select
+                                        name="select"
+                                        bind:value={genero}
+                                        required
+                                    >
+                                        <option value="Masculino"
+                                            >Masculino</option
+                                        >
+                                        <option value="Femenino" selected
+                                            >Femenino</option
+                                        >
+                                        <option value="No Binario"
+                                            >No binario</option
+                                        >
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <!-- Submit button -->
+                            <button on:click={handleSubmit} class="login-button"
+                                >Registrar</button
+                            >
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="modal-body p-4">
-                <form>
-      <!-- Name input -->
-      <div class="form-group">
-            <label for="email">Nombre Completro</label>
-            <input type="text" id="text" name="texte" bind:value={nombre} required>
         </div>
-       <div class="form-group">
-            <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" name="email" bind:value={email} required>
-        </div>
-      <div class="form-group">
-            <label for="email">Contraseña</label>
-            <input type="password" id="email" name="email" bind:value={password} required>
-        </div>
-      
-      
-
-      <div class="row">
-      <div class="col-md-6">
-      <div class="">
-      <label class="form-label" for="registerPassword">Edad</label>
-      <input type="text" id="text" class="form-control" bind:value={edad} required />
-      
     </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group mb-4">
-      <label class="form-label" for="registerRepeatPassword">Genero</label>
-		<select name="select" bind:value={genero} required>
-  	<option value="Masculino">Masculino</option>
-  	<option value="Femenino" selected>Femenino</option>
-  	<option value="No Binario">No binario</option>
-	</select  >
-
-      
-    </div>
-  </div>
-</div>
-<div class="form-group ">
-                    <!-- Submit button -->
-                     <button on:click={handleSubmit} class="login-button">Registrar</button>
-</div>
-                </form>
-            </div>
-        </div>
-
 </dialog>
 
 <style>
-
-	.center-text {
-    text-align: center;
-  }
-	dialog {
-        
+    .center-text {
+        text-align: center;
+    }
+    dialog {
         margin: auto;
-		max-width: 32em;
-		border-radius: 0.2em;
-		border: none;
-		padding: 0;
-	}
-	dialog::backdrop {
-		background: rgba(0, 0, 0, 0.3);
-	}
-	dialog > div {
-		padding: 1em;
+        max-width: 32em;
+        border-radius: 0.2em;
+        border: none;
+        padding: 0;
+    }
+    dialog::backdrop {
+        background: rgba(0, 0, 0, 0.3);
+    }
+    dialog > div {
+        padding: 1em;
         position: relative;
-	}
-	dialog[open] {
-		animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-	}
-	@keyframes zoom {
-		from {
-			transform: scale(0.95);
-		}
-		to {
-			transform: scale(1);
-		}
-	}
-	dialog[open]::backdrop {
-		animation: fade 0.2s ease-out;
-	}
-	@keyframes fade {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	button {
-		display: block;
-	}
+    }
+    dialog[open] {
+        animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes zoom {
+        from {
+            transform: scale(0.95);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+    dialog[open]::backdrop {
+        animation: fade 0.2s ease-out;
+    }
+    @keyframes fade {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    button {
+        display: block;
+    }
 
-
-	.form-group label {
+    .form-group label {
         display: block;
         font-weight: bold;
         margin-bottom: 0.5rem;
@@ -198,20 +253,19 @@ const MSJRe=()=>{
         border-radius: 0.25rem;
     }
 
-     .form-group button {
-        background-color: #025E73;
+    .form-group button {
+        background-color: #025e73;
         color: #ffffff;
         border: none;
         padding: 0.5rem 1rem;
         border-radius: 0.25rem;
         cursor: pointer;
-       
     }
 
     .form-group button:hover {
-        background-color: #F25C05;
+        background-color: #f25c05;
     }
-	  .form-group {
+    .form-group {
         margin-bottom: 1rem;
     }
 </style>
