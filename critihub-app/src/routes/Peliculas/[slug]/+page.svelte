@@ -1,6 +1,9 @@
 <script>
+    /** @type {import('./$types').PageData} */
     import Rating from "../../../componentes/Rating_banner.svelte";
-	/** @type {import('./$types').PageData} */
+    import { isLoggedIn, isAdmin, user } from "$lib/stores.js";
+    
+	
     //import Modal from '../../../componentes/Modal.svelte';
     let showModal = false;
 
@@ -8,7 +11,13 @@
 
     let rating = data.rating;
 
+    let nombre = "Inicia sesión"; 
 
+    console.log($isLoggedIn);
+
+    if($isLoggedIn){
+        nombre = $user.displayName;
+    }
 </script>
 
 
@@ -44,28 +53,33 @@
 </div>
 
 <!-- Caja de comentarios -->
-<div class="comment-session">
-    <div class="post-comment">
-        <div class="list">
+<div class="contenedor bg">
+    
+    <div class="comment-session">
+        <h3>Dejanos saber que piensas!</h3>
+        <p>¿Has visto esta pelicula? deja un comentario</p>
+        <div class="comment-box">
             <div class="user">
-                <div class="user-image"> <img src="/img/user.jpg" alt="user"> </div>
-                <div class="user-meta">
-                    <div class="name"><p>Jose Lino</p></div>
-                    <div class="day">hace 18 dias</div>
-                </div>
-            </div> 
-            <div class="comment-post">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu lacus et lacus interdum rutrum sit amet hendrerit diam. Morbi ut tempus felis, nec vehicula augue. Vivamus vel lectus aliquet, cursus quam ut, rutrum lectus. Nam id cursus urna. Nam a suscipit turpis. Aliquam congue arcu vitae arcu tristique, egestas sodales felis consectetur. Curabitur ornare metus non mi congue sodales. Phasellus molestie consequat metus sed consequat. </div>  
+                <div class="image"> <img src="/img/user.jpg" alt="user"> </div>
+                <div class="name">{nombre}</div>
+            </div>
+            <form action="">
+                <textarea name="comment" placeholder="tu mensaje" id="comentario"></textarea>
+                <button class="comment-submit">comentario</button>
+            </form>
         </div>
-    </div>
-    <div class="comment-box">
-        <div class="user">
-            <div class="image"> <img src="/img/user.jpg" alt="user"> </div>
-            <div class="name">JoseLino</div>
+        <div class="post-comment">
+            <div class="list">
+                <div class="user">
+                    <div class="user-image"> <img src="/img/user.jpg" alt="user"> </div>
+                    <div class="user-meta">
+                        <div class="name"><p>Jose Lino</p></div>
+                        <div class="day">hace 18 dias</div>
+                    </div>
+                </div> 
+                <div class="comment-post">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu lacus et lacus interdum rutrum sit amet hendrerit diam. Morbi ut tempus felis, nec vehicula augue. Vivamus vel lectus aliquet, cursus quam ut, rutrum lectus. Nam id cursus urna. Nam a suscipit turpis. Aliquam congue arcu vitae arcu tristique, egestas sodales felis consectetur. Curabitur ornare metus non mi congue sodales. Phasellus molestie consequat metus sed consequat. </div>  
+            </div>
         </div>
-        <form action="" method="post">
-            <textarea name="comment" placeholder="tu mensaje"></textarea>
-            <button class="comment-submit">comentario</button>
-        </form>
     </div>
 </div>
 <!-- Fin caja comentarios -->
@@ -143,6 +157,13 @@
     }
 
     /*--------------- Critica CSS--------------------*/
+    .bg {
+        background-color: var(--container-color);
+        padding: 40px 0 40px;
+        border-radius: 0.5rem;
+        margin-top: 3rem;
+    }
+
     .comment-box,
     .post-comment .list{
         background: #fff;
@@ -151,13 +172,22 @@
         color: #000 !important;
     }
     .comment-session{
-        width: 650px;
+        width: 90%;
         height: auto;
         margin: 0 auto;
     }
+
+    .comment-session h3 {
+        color: var(--main-color);
+    }
+
+    .comment-session p {
+        margin-bottom: 15px;
+    }
+
     .post-comment .list{
         width: 100%;
-        margin-bottom: 12px;
+        margin-top: 12px;
     }
     .post-comment .list .user{
         display: flex;
@@ -170,9 +200,12 @@
         width: 38px;
         margin-right: 10px;
         border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
     }
     .comment-session .name{
         text-transform: uppercase;
+        width: 400px;
         font-weight: 500;
         color: blacks !important;
     }
@@ -197,6 +230,8 @@
         height: 24px;
         margin-right: 10px;
         border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
     }
     .comment-box textarea{ 
         background: #eee;
