@@ -1,45 +1,37 @@
 <script>
-
+    import { collection, query, where, onSnapshot } from "firebase/firestore";
+    import { db } from "$lib/firebase.js";
     let selected = 0;
+    let items = [];
 
-    let items = [
-        {
-            titulo : "Titulo",
-            rating : "4.5",
-            categoria : "Categoria",
-            id : "1",
-            tags : ["1", "2", "3", "4"],
-        },
-        {
-            titulo : "Titulo",
-            rating : "4.5",
-            categoria : "Categoria",
-            id : "2",
-            tags : ["1", "2", "3", "4"],
-        },
-        {
-            titulo : "Titulo",
-            rating : "4.5",
-            categoria : "Categoria",
-            id : "3",
-            tags : ["1", "2", "3", "4"],
-        },
-        {
-            titulo : "Titulo",
-            rating : "4.5",
-            categoria : "Categoria",
-            id : "4",
-            tags : ["1", "2", "3", "4"],
-        },
-        {
-            titulo : "Titulo",
-            rating : "4.5",
-            categoria : "Categoria",
-            id : "5",
-            tags : ["1", "2", "3", "4"],
-        },
+    let categoria = "Peliculas"
 
-    ]
+    if(categoria == "Peliculas"){
+        const qp = query(collection(db, "Peliculas"));
+        const unsubscribeP = onSnapshot(qp, (querySnapshot) => {
+            const peliculas = [];
+            querySnapshot.forEach((doc) => {
+                peliculas.push(doc.data());
+            });
+            peliculas.forEach(element => {
+                element.id = element.id + "p";
+            });
+            items = [...peliculas];
+        });
+    }else{
+        const qp = query(collection(db, "Series"));
+        const unsubscribeP = onSnapshot(qp, (querySnapshot) => {
+            const peliculas = [];
+            querySnapshot.forEach((doc) => {
+                peliculas.push(doc.data());
+            });
+            peliculas.forEach(element => {
+                element.id = element.id + "p";
+            });
+            items = [...peliculas];
+        });
+    }
+
 </script>
 
 
@@ -47,7 +39,7 @@
     <div class="menu-acciones">
         <h2>Lista de publicaciones</h2>
         <div>
-            <button class="btn secondary">Agregar</button>
+            <button class="btn secondary" on:click={()=>{categoria="Juegos"}}>Agregar</button>
             <button class="btn secondary">Editar</button>
             <button class="btn secondary">Eliminar</button>
         </div>
@@ -102,13 +94,13 @@
     .lista {
         height: 100%;
         width: 100%;
+        overflow: hidden;
     }
 
     .lista table {
         padding: 15px;
         width: 100%;
         height: auto;
-        
     }
 
     thead {
