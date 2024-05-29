@@ -1,4 +1,7 @@
 <script>
+
+    let selected = 0;
+
     let items = [
         {
             titulo : "Titulo",
@@ -11,28 +14,28 @@
             titulo : "Titulo",
             rating : "4.5",
             categoria : "Categoria",
-            id : "1",
+            id : "2",
             tags : ["1", "2", "3", "4"],
         },
         {
             titulo : "Titulo",
             rating : "4.5",
             categoria : "Categoria",
-            id : "1",
+            id : "3",
             tags : ["1", "2", "3", "4"],
         },
         {
             titulo : "Titulo",
             rating : "4.5",
             categoria : "Categoria",
-            id : "1",
+            id : "4",
             tags : ["1", "2", "3", "4"],
         },
         {
             titulo : "Titulo",
             rating : "4.5",
             categoria : "Categoria",
-            id : "1",
+            id : "5",
             tags : ["1", "2", "3", "4"],
         },
 
@@ -60,7 +63,7 @@
             </thead>
             <tbody>
                 {#each items as item}
-                    <tr>
+                    <tr on:click={()=>{selected=item.id}} class:selected={selected===item.id}>
                         <td>{item.titulo}</td>
                         <td>{item.categoria}</td>
                         <td>{item.id}</td>
@@ -120,6 +123,10 @@
 
     tr:hover {
         background-color: rgba(209, 209, 209, 0.181);
+    }
+
+    .selected {
+        background-color: rgba(149, 149, 149, 0.219);
     }
 
 </style>
