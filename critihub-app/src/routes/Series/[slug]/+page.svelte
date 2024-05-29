@@ -1,9 +1,11 @@
 <script>
+    import Rating from "../../../componentes/Rating_banner.svelte";
 	/** @type {import('./$types').PageData} */
     //import Modal from '../../../componentes/Modal.svelte';
     let showModal = false;
 
 	export let data;
+    let rating = data.rating;
 
 </script>
 
@@ -18,11 +20,7 @@
         <h2>{data.titulo}</h2>
 
         <div class="rating">
-            <i class="bx bxs-star"></i>
-            <i class="bx bxs-star"></i>
-            <i class="bx bxs-star"></i>
-            <i class="bx bxs-star"></i>
-            <i class="bx bxs-star-half"></i>
+            <Rating {rating} />
         </div>
         
         <div class="tags">
