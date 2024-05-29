@@ -6,8 +6,7 @@
 
     let categoria = "Peliculas"
 
-    if(categoria == "Peliculas"){
-        const qp = query(collection(db, "Peliculas"));
+    const qp = query(collection(db, "Peliculas"));
         const unsubscribeP = onSnapshot(qp, (querySnapshot) => {
             const peliculas = [];
             querySnapshot.forEach((doc) => {
@@ -18,20 +17,7 @@
             });
             items = [...peliculas];
         });
-    }else{
-        const qp = query(collection(db, "Series"));
-        const unsubscribeP = onSnapshot(qp, (querySnapshot) => {
-            const peliculas = [];
-            querySnapshot.forEach((doc) => {
-                peliculas.push(doc.data());
-            });
-            peliculas.forEach(element => {
-                element.id = element.id + "p";
-            });
-            items = [...peliculas];
-        });
-    }
-
+        
 </script>
 
 
