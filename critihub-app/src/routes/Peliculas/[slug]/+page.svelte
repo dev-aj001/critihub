@@ -2,6 +2,7 @@
     /** @type {import('./$types').PageData} */
     import Rating from "../../../componentes/Rating_banner.svelte";
     import { isLoggedIn, isAdmin, user } from "$lib/stores.js";
+    import Estrellas from  "../../../componentes/Estrellas.svelte";
     
 	
     //import Modal from '../../../componentes/Modal.svelte';
@@ -18,6 +19,10 @@
     if($isLoggedIn){
         nombre = $user.displayName;
     }
+
+    let text = "";
+
+    $:console.log(text);
 </script>
 
 
@@ -65,7 +70,8 @@
             </div>
             <form action="">
                 <textarea name="comment" placeholder="tu mensaje" id="comentario"></textarea>
-                <button class="comment-submit">comentario</button>
+                <Estrellas texto={text}/>
+                <button class="comment-submit" on:click={()=>{text}}>comentario</button>
             </form>
         </div>
         <div class="post-comment">
@@ -215,6 +221,7 @@
     .post-comment .comment-post{
         padding: 0 0 15px 58px;
     }
+    
     /* Comment-Box */
     .comment-box{
         padding: 10px;
