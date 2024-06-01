@@ -82,18 +82,20 @@ img {
 .btn {
   font-weight: 600;
   border: none;
-  color: var(--text-color);
+  
   padding: 8px 14px;
   cursor: pointer;
   border-radius: 5px;
 }
 
 .primary {
-  background-color: #007bff;
+  background-color: var(--main-color);
+  color: var(--text-color);
 }
 
 .primary:hover {
-  background: #0b7dda;
+  background: var(--hover-color);
+  color: var(--text-color);
 }
 
 .secondary {
@@ -103,6 +105,10 @@ img {
 
 .secondary:hover {
   background: #ddd;
+}
+
+.secondary:active {
+  background: #b1b1b1;
 }
 
 .success {

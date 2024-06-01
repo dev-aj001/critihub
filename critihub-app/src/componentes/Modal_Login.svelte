@@ -24,6 +24,7 @@
     if(passCoincide){
       createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        
         // Signed up 
         showModal = false;
         updateProfile(auth.currentUser, {
