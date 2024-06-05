@@ -11,7 +11,7 @@
 
 	export let data;
 
-    let rating = data.rating;
+    let rating = data.data.rating;
 
     let nombre = "Inicia sesión"; 
     let rsn = "";
@@ -29,7 +29,7 @@
    
  async function reseña() {
   try {
-    const subcoleccionRef = collection(db,"Publicaciones",data.uid, "Reseñas");
+    const subcoleccionRef = collection(db,"Publicaciones",data.id, "Reseñas");
     await addDoc(subcoleccionRef, {
       Comentario: rsn,
       Calificacion: 5,
@@ -49,17 +49,17 @@
 
 <div class="detail-container contenedor">
     <!-- Image -->
-    <img src={data.banner} alt="" class="detail-img">
+    <img src={data.data.banner} alt="" class="detail-img">
     <!-- Text -->
     <div class="detail-text">
-        <h2>{data.titulo}</h2>
+        <h2>{data.data.titulo}</h2>
 
         <div class="rating">
             <Rating {rating} />
         </div>
         
         <div class="tags">
-            {#each data.tags as tag}
+            {#each data.data.tags as tag}
                 <span>{tag}</span>
             {/each}
         </div>
@@ -72,8 +72,8 @@
 </div>
 
 <div class="contenedor about-content">
-    <h2>{data.titulo}</h2>
-    <p>{data.sinopsis}</p>
+    <h2>{data.data.titulo}</h2>
+    <p>{data.data.sinopsis}</p>
 </div>
 
 <!-- Caja de comentarios -->
