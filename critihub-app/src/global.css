@@ -134,3 +134,21 @@ img {
 .danger:hover {
   background: #da190b;
 }
+
+.actions-container {
+  display: flex;
+  column-gap: 10px;
+  justify-content: center;
+}
+
+
+.custom-table-classname {
+  font-size: 0.9rem;
+}
+
+
+.tbl-btn{
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+

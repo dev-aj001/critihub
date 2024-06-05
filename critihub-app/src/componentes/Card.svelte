@@ -13,16 +13,16 @@
     };
 
     //export let tags = ['accion', 'trama']
-    let tags = Array.isArray(item.tags) ? item.tags.slice(0, 4) : [];
+    let tags = Array.isArray(item.data.tags) ? item.data.tags.slice(0, 4) : [];
 
 </script>
 
 <div class="swiper-slide">
     <div class="movie-box">
-        <img src={item.cover} alt="cover" class="movie-box-img">
+        <img src={item.data.cover} alt="cover" class="movie-box-img">
         <div class="box-text">
             <a href={`${categoria}/${item.id}`}>
-                <h2 class="movie-title">{item.titulo}</h2>
+                <h2 class="movie-title">{item.data.titulo}</h2>
             </a>
             <span class="movie-type"><div class="tags">
                 {#each tags as tag}
@@ -30,8 +30,8 @@
                 {/each}
             </div></span>
             <a href={`${categoria}/${item.id}`} class="rating-tag">
-                <div class="rating {colorTag(item.rating)}">
-                    <h3>{item.rating}</h3>
+                <div class="rating {colorTag(item.data.rating)}">
+                    <h3>{item.data.rating}</h3>
                     <i class='bx bxs-star'></i>
                 </div>
             </a>

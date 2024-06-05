@@ -5,7 +5,7 @@ import { db } from "$lib/firebase.js";
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	let id = params.slug;
-	const docRef = doc(db, "Peliculas", id);
+	const docRef = doc(db, "Publicaciones", id);
 	const docSnap = await getDoc(docRef);
 	if (docSnap.exists()) {
 		console.log("Document data:", docSnap.data());

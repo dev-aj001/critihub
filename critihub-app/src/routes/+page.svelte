@@ -9,40 +9,40 @@
     import { collection, query, where, onSnapshot } from "firebase/firestore";
 
     // Obtener lista de peliculas de firebase
-    const qPeliculas = query(collection(db, "Peliculas"));
+    const qPeliculas = query(collection(db, "Publicaciones"),where("categoria", "==", "peliculas"));
 
     const unsubscribePeliculas = onSnapshot(qPeliculas, (querySnapshot) => {
         const items = [];
         querySnapshot.forEach((doc) => {
-            items.push(doc.data());
+            items.push({data:doc.data(), id:[doc.id]});
         });
         items.reverse();
         $movies = [...items];
-        
     });
 
     // Obtener lista de series de firebase
-    const qSeries = query(collection(db, "Series"));
+    const qSeries = query(collection(db, "Publicaciones"),where("categoria", "==", "series"));
 
     const unsubscribeSeries = onSnapshot(qSeries, (querySnapshot) => {
         const items = [];
         querySnapshot.forEach((doc) => {
-            items.push(doc.data());
+            items.push({data:doc.data(), id:[doc.id]});
         });
         items.reverse();
         $series = [...items];
     });
 
     // Obtener lista de peliculas de firebase
-    const qJuegos = query(collection(db, "Juegos"));
+    const qJuegos = query(collection(db, "Publicaciones"),where("categoria", "==", "juegos"));
 
     const unsubscribeJuegos = onSnapshot(qJuegos, (querySnapshot) => {
         const items = [];
         querySnapshot.forEach((doc) => {
-            items.push(doc.data());
+            items.push({data:doc.data(), id:[doc.id]});
         });
         items.reverse();
         $juegos = [...items];
+        console.log($juegos);
     });
 
     

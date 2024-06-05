@@ -4,6 +4,8 @@
     export let categoria = "categoria" ;
     export let items;
 
+    console.log(items);
+
 </script>
 
 <section class="movies contenedor" id="movies">
@@ -13,7 +15,7 @@
     </div>
     <!-- Contenido -->
     <div class="content-container">
-        {#each items as item (item.id)}
+        {#each items as item}
             <Card {item} {categoria}/>
         {/each}
     </div>
