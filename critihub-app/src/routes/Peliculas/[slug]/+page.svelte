@@ -50,24 +50,28 @@
 <div class="detail-container contenedor">
     <!-- Image -->
     <img src={data.data.banner} alt="" class="detail-img">
-    <!-- Text -->
-    <div class="detail-text">
-        <h2>{data.data.titulo}</h2>
+    <div class="post-content">
+        <!-- POSTER -->
+        <img src={data.data.cover} alt="poster" class="poster-img">
+        <!-- Text -->
+        <div class="detail-text">
+            <h2>{data.data.titulo}</h2>
 
-        <div class="rating">
-            <Rating {rating} />
-        </div>
-        
-        <div class="tags">
-            {#each data.data.tags as tag}
-                <span>{tag}</span>
-            {/each}
-        </div>
+            <div class="rating">
+                <Rating {rating} />
+            </div>
+            
+            <div class="tags">
+                {#each data.data.tags as tag}
+                    <span>{tag}</span>
+                {/each}
+            </div>
 
-        <a href="#" class="watch-btn">
-            <i class="bx bx-play" on:click={()=>{showModal = true}}></i>
-            <span>Mira el trailer!</span>
-        </a>
+            <a href="#" class="watch-btn">
+                <i class="bx bx-play" on:click={()=>{showModal = true}}></i>
+                <span>Mira el trailer!</span>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -110,10 +114,25 @@
 <!-- Fin caja comentarios -->
 
 <style>
+
+
+    .poster-img {
+        width: 200px;
+        height: 290px;
+        position: absolute;
+        object-fit: cover;
+        left: 0;
+        bottom: 0;
+        z-index: 2;
+        box-shadow: 10px -2px 66px 0px rgba(0,0,0,0.75);
+    }
+
     .detail-container {
         position: relative;
         min-height: 540px;
         margin-top: 5rem !important;
+        overflow: hidden;
+        box-shadow: 1px 13px 20px -7px rgba(0,0,0,0.41);
     }
 
     .detail-img {
@@ -134,8 +153,8 @@
         display: flex;
         flex-direction: column;
         justify-content: end;
-        padding: 40px;
-        background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.8));
+        padding: 40px 240px;
+        background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.9));
     }
 
     .detail-text h2 {

@@ -13,7 +13,7 @@ export async function load({ params }) {
 			data: docSnap.data(),
 			id: id,
 		};
-		console.log("Document data:", nDoc);
+		
 		return nDoc;
 	  } else {
 		// docSnap.data() will be undefined in this case

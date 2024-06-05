@@ -8,8 +8,13 @@ export async function load({ params }) {
 	const docRef = doc(db, "Publicaciones", id);
 	const docSnap = await getDoc(docRef);
 	if (docSnap.exists()) {
-		console.log("Document data:", docSnap.data());
-		return docSnap.data();
+		
+		const nDoc = {
+			data: docSnap.data(),
+			id: id,
+		};
+		
+		return nDoc;
 	  } else {
 		// docSnap.data() will be undefined in this case
 		console.log("No such document!");
