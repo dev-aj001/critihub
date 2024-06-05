@@ -2,8 +2,9 @@
     /** @type {import('./$types').PageData} */
     import Rating from "../../../componentes/Rating_banner.svelte";
     import { isLoggedIn, isAdmin, user } from "$lib/stores.js";
-    import Estrellas from  "../../../componentes/Estrellas.svelte";
-    
+    import Estrellas from  "../../../componentes/Rating_Stars.svelte";
+    import { query,collection,addDoc,getDocs,onSnapshot,doc, deleteDoc} from "firebase/firestore";
+   import {db } from "$lib/firebase";
 	
     //import Modal from '../../../componentes/Modal.svelte';
     let showModal = false;
@@ -13,6 +14,7 @@
     let rating = data.rating;
 
     let nombre = "Inicia sesión"; 
+    let rsn = "";
 
     console.log($isLoggedIn);
 
@@ -23,6 +25,23 @@
     let text = "";
 
     $:console.log(text);
+;
+   
+ async function reseña() {
+  try {
+    const subcoleccionRef = collection(db,"Publicaciones",data.uid, "Reseñas");
+    await addDoc(subcoleccionRef, {
+      Comentario: rsn,
+      Calificacion: 5,
+    });
+    console.log('Datos agregados correctamente a la subcolección');
+  } catch (error) {
+    console.error('Error al agregar datos a la subcolección:', error);
+  }
+
+  }
+
+
 </script>
 
 
@@ -69,9 +88,9 @@
                 <div class="name">{nombre}</div>
             </div>
             <form action="">
-                <textarea name="comment" placeholder="tu mensaje" id="comentario"></textarea>
-                <Estrellas texto={text}/>
-                <button class="comment-submit" on:click={()=>{text}}>comentario</button>
+                <textarea name="comment" placeholder="tu mensaje" id="comentario" bind:value={rsn}></textarea>
+                <Estrellas/>
+                <button class="comment-submit" on:click={reseña}>comentario</button>
             </form>
         </div>
         <div class="post-comment">
