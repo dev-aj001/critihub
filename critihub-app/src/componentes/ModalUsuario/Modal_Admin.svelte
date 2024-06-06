@@ -48,13 +48,9 @@
             let ids = create.user.uid;
             await setDoc(doc(db, "usuariosnew", ids), {
                 uid: ids,
-                nombre: nombre,
-                email: email,
-                password: password,
                 edad: edad,
                 genero: genero,
                 rol: "usuario",
-                createdAt: new Date(),
             });
 
             dialog.close();
