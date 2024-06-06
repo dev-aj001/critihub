@@ -2,11 +2,11 @@
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
 
-    export let rating = writable(0);
+    export let rating2 = writable(0);
 
     function handleClick(event) {
         const selectedRating = event.target.dataset.rating;
-        rating.set(Number(selectedRating));
+        rating2.set(Number(selectedRating));
         localStorage.setItem('rating', selectedRating);
     }
 
@@ -14,7 +14,7 @@
 
         const savedRating = localStorage.getItem('rating');
         if (savedRating) {
-            rating.set(Number(savedRating));
+            rating2.set(Number(savedRating));
         }
     });
 
@@ -54,7 +54,7 @@
     <div class="ratings">
         {#each stars as star}
             <span
-                class:selected={star <= $rating}
+                class:selected={star <= $rating2}
                 data-rating={star}
                 on:click={handleClick}
             >&#9733;</span>

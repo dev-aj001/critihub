@@ -4,43 +4,80 @@
     import { isLoggedIn, isAdmin, user } from "$lib/stores.js";
     import Estrellas from  "../../../componentes/Rating_Stars.svelte";
     import { query,collection,addDoc,getDocs,onSnapshot,doc, deleteDoc} from "firebase/firestore";
-   import {db } from "$lib/firebase";
+    import {db } from "$lib/firebase";
+    import { writable } from 'svelte/store';
+
+   
+   
+    let stars = Array(5).fill(0).map((_, i) => i + 1);
 	
-    //import Modal from '../../../componentes/Modal.svelte';
     let showModal = false;
 
 	export let data;
+    export let rating2 = writable(0);
+
 
     let rating = data.data.rating;
 
     let nombre = "Inicia sesión"; 
     let rsn = "";
+    let foto = "";
+    let items = []
 
     console.log($isLoggedIn);
 
     if($isLoggedIn){
         nombre = $user.displayName;
+        foto = $user.photoURL;
     }
 
     let text = "";
-
+    
     $:console.log(text);
-;
-   
+
+async function Mostrarreseña(){
+    const q = query(collection(db, "Publicaciones",data.id,"Reseñas"));
+    onSnapshot(q, (querySnapshot) => {
+    const reseñas = [];
+    querySnapshot.forEach((doc) => {
+      reseñas.push(doc.data());
+        });
+
+        console.log(reseñas);
+      items=[...reseñas];
+       
+    });
+}
  async function reseña() {
   try {
     const subcoleccionRef = collection(db,"Publicaciones",data.id, "Reseñas");
     await addDoc(subcoleccionRef, {
+      Nombre:nombre,
+      Foto:foto,
       Comentario: rsn,
-      Calificacion: 5,
+      Calificacion: $rating2,
+      Fecha:new Date().toLocaleDateString('es-ES')
+      
     });
+    rsn='';
+    rating2= writable(0);
+    
     console.log('Datos agregados correctamente a la subcolección');
   } catch (error) {
     console.error('Error al agregar datos a la subcolección:', error);
   }
 
   }
+  //Funcion de estrellas
+   function handleClick(event) {
+        const selectedRating = event.target.dataset.rating;
+        rating2.set(Number(selectedRating));
+        
+    }
 
+   
+   
+Mostrarreseña()
 
 </script>
 
@@ -87,35 +124,54 @@
         <h3>Dejanos saber que piensas!</h3>
         <p>¿Has visto esta pelicula? deja un comentario</p>
         <div class="comment-box">
+           
             <div class="user">
-                <div class="image"> <img src="/img/user.jpg" alt="user"> </div>
+                <div class="image"> <img src="{foto} "alt="user"> </div>
                 <div class="name">{nombre}</div>
             </div>
+            <div class="rating-wrapper">
+                <div class="ratings">
+                {#each stars as star}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <span
+                        class:selected={star <= $rating2}
+                        data-rating={star}
+                        on:click={handleClick}
+                        >&#9733;</span>
+                    {/each}
+                </div>
+            </div>
             <form action="">
-                <textarea name="comment" placeholder="tu mensaje" id="comentario" bind:value={rsn}></textarea>
-                <Estrellas/>
-                <button class="comment-submit" on:click={reseña}>comentario</button>
+                
+                <textarea name="comment" placeholder="Tu mensaje" id="comentario" bind:value={rsn}></textarea>
+                  
+                <button class="comment-submit" on:click={reseña}>Comentario</button>
             </form>
         </div>
         <div class="post-comment">
+           {#each items as item} 
             <div class="list">
                 <div class="user">
-                    <div class="user-image"> <img src="/img/user.jpg" alt="user"> </div>
+                    <div class="user-image"> <img src={item.Foto?item.Foto:"/img/usuario2.png"} alt="user"> </div>
                     <div class="user-meta">
-                        <div class="name"><p>Jose Lino</p></div>
-                        <div class="day">hace 18 dias</div>
+                        <div class="name"><p>{item.Nombre}</p>
+                          <div class="rating">
+                        <Rating rating={item.Calificacion} />
+                    </div>
+                           </div>
+                        <div class="day"> Publicando el {item.Fecha}</div>
                     </div>
                 </div> 
-                <div class="comment-post">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu lacus et lacus interdum rutrum sit amet hendrerit diam. Morbi ut tempus felis, nec vehicula augue. Vivamus vel lectus aliquet, cursus quam ut, rutrum lectus. Nam id cursus urna. Nam a suscipit turpis. Aliquam congue arcu vitae arcu tristique, egestas sodales felis consectetur. Curabitur ornare metus non mi congue sodales. Phasellus molestie consequat metus sed consequat. </div>  
+                <div class="comment-post">{item.Comentario}</div>  
             </div>
+             {/each}
         </div>
     </div>
 </div>
 <!-- Fin caja comentarios -->
 
 <style>
-
-
     .poster-img {
         width: 200px;
         height: 290px;
@@ -303,6 +359,31 @@
     }
     .comment-box .comment-submit:hover{
         background: #0076bf;
+    }
+    .rating-wrapper {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 0 10px;
+    }
+
+    .ratings {
+        display: flex;
+    }
+
+    .ratings span {
+        cursor: pointer;
+        transition: color .2s, transform .2s;
+        font-size: 50px;
+    }
+
+    .ratings span:hover,
+    .ratings span:hover ~ span {
+        color: orange;
+        transform: scale(1.3);
+    }
+
+    .ratings span.selected {
+        color: orange;
     }
 
 </style>
