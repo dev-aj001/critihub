@@ -7,3 +7,4 @@ export const isAdmin = writable(false);
 export const movies = writable([]);
 export const series = writable([]);
 export const juegos = writable([]);
+export const idP = writable([]);

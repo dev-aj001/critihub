@@ -1,51 +1,24 @@
 <script>
-    import { onMount } from "svelte";
     import { Grid, h } from "gridjs";
     import "gridjs/dist/theme/mermaid.css";
-    import { db } from "$lib/firebase"; // Asegúrate de importar tu configuración de Firebase
-    import { collection, query, where, onSnapshot } from "firebase/firestore";
-    import { writable } from "svelte/store";
+    import { onMount } from "svelte";
+    import { db } from "$lib/firebase";
     import ModalCrear from "../../componentes/Modal_CrearPublicacion.svelte";
     import ModalEditar from "../../componentes/Modal_EditarPublicacion.svelte";
-    
+    import {
+        collection,
+        query,
+        where,
+        onSnapshot,
+        deleteDoc,
+        doc,
+    } from "firebase/firestore";
 
-    let tablaGJS;
-    let items = writable([]);
+    let items = [];
 
-    onMount(() => {
-
-        const q = query(
-            collection(db, "usuariosnew"),
-        );
-
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const aItems = [];
-            querySnapshot.forEach((doc) => {
-                let i = [
-                    doc.id,
-                    doc.data().nombre,
-                    doc.data().email,
-                    doc.data().genero,
-                    doc.data().edad,
-                ];
-                aItems.push(i);
-            });
-            items.set(aItems); // Actualiza el store con los datos
-        });
-
-        return () => unsubscribe(); // Limpia el listener de Firebase onSnapshot al desmontar
-    });
-
-    // Usar una suscripción a la variable writable para inicializar Grid.js
-    $: if ($items.length && tablaGJS) {
-        initializeGrid($items);
-    }
-
-    function initializeGrid(data) {
-        tablaGJS.innerHTML = ""; // Limpia el contenido previo si es necesario
-
-        new Grid({
-            columns: [
+    var table;
+    let grid = new Grid({
+        columns: [
                 "ID",
                 "Nombre",
                 "Correo",
@@ -87,22 +60,62 @@
                     },
                 },
             ],
-            search: true,
-            sort: true,
-            fixedHeader: true,
-            height: "400px",
-            className: {
-                td: "my-custom-td-class",
-                table: "custom-table-classname",
-            },
-            pagination: {
-                limit: 5,
-            },
-            data: data,
-        }).render(tablaGJS);
-
-        
+        search: true,
+        sort: true,
+        height: "400px",
+        resizable: true,
+        pagination: {limit: 5},
+        data: items,
+        style: {
+    table: {
+      border: 'none',
+      'font-size': '0.9rem',
+    },
+    th: {
+      'background-color': '#ff6d19',
+      color: '#fff',
+      'border-bottom': '3px solid #ccc',
+      'text-align': 'center'
+    },
+    td: {
+      'text-align': 'center',
+      'background-color': '#172c3a',
+      color: '#fff',
+    },
+    footer: {
+        'background-color': '#172c3a',
+        color: '#fff',
     }
+    }
+    });
+
+    onMount(async () => {
+        grid.render(table);
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const aItems = [];
+        querySnapshot.forEach((doc) => {
+            let i = [
+                doc.id,
+                doc.data().nombre,
+                doc.data().email,
+                doc.data().genero,
+                doc.data().edad,
+            ];
+            aItems.push(i);
+        });
+        items = [...aItems];
+        console.log(items);
+        updateTable();
+    });
+    });
+
+    function updateTable() {
+        grid.updateConfig({
+            data: items,
+        }).forceRender();
+    }
+
+    const q = query(collection(db, "usuariosnew"));
 
     function editAction(row) {
         showModal2 = true;
@@ -116,43 +129,19 @@
     }
 
 
-    let showModal1 = false;
-    let showModal2 = false;
+    var showModal1 = false;
+    var showModal2 = false;
 
 </script>
 
-<ModalCrear bind:showModal1/>
-<ModalEditar bind:showModal2/>
-<div class="contenedor cntd">
-    <div class="table-container" bind:this={tablaGJS}>
-    </div>
+<ModalCrear bind:showModal_Pulicacion={showModal1}/>
+<ModalEditar bind:showModal_EditarPublicacion={showModal2}/>
+<div class="table-container">
+    <div class="table" bind:this={table}></div>
 </div>
 
 <style>
-    .cntd {
-        position: relative;
-    }
-
-    .mbtn {
-        position: absolute;
-        right: 10px;
-        top: 20px;
-        z-index: 50;
-    }
-
-    .mh3 {
-        position: absolute;
-        color: var(--main-color);
-        z-index: -50;
-        top: 25px;
-        left: 280px;
-    }
-
     .table-container {
         position: relative;
-        width: 100%;
-        height: 100%;
-        overflow: auto; /* Añadir overflow para manejar el contenido */
-        padding: 10px;
     }
 </style>

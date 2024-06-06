@@ -1,20 +1,21 @@
 <script>
-    export let showModal2;
+	import { idP } from "$lib/stores";
+    export let showModal_EditarPublicacion;
     let dialog;
 
-    $: if (dialog && showModal2) dialog.showModal();
+    $: if (dialog && showModal_EditarPublicacion) dialog.showModal();
 </script>
 
 <dialog
 	bind:this={dialog}
-	on:close={() => (showModal2 = false)}
+	on:close={() => (showModal_EditarPublicacion = false)}
 	on:click|self={() => dialog.close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
         
         <div class="modal-conainer">
-			Editar
+			Editar {$idP}
         </div>
         
 		<!-- svelte-ignore a11y-autofocus -->
@@ -25,7 +26,7 @@
 <style>
     .modal-conainer {
         height: 50px;
-        width: 150px;
+        width: auto;
     }
 
 dialog {

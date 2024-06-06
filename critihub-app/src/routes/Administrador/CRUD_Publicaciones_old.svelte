@@ -151,8 +151,8 @@
 
 </script>
 
-<ModalCrear bind:showModal1/>
-    <ModalEditar bind:showModal2/>
+<ModalCrear bind:showModal_Pulicacion={showModal1}/>
+    <ModalEditar bind:showModal_EditarPublicacion={showModal2}/>
     <div class="contenedor cntd">
         <button class="btn primary mbtn" on:click={()=>{showModal1=true}}>Nuevo</button>
         <h3 class="mh3">Publicaciones</h3>

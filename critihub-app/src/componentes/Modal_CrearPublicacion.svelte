@@ -1,35 +1,94 @@
 <script>
-    export let showModal1;
+    export let showModal_Pulicacion;
     let dialog;
 
-    $: if (dialog && showModal1) dialog.showModal();
+    $: if (dialog && showModal_Pulicacion) dialog.showModal();
 </script>
 
 <dialog
 	bind:this={dialog}
-	on:close={() => (showModal1 = false)}
+	on:close={() => (showModal_Pulicacion = false)}
 	on:click|self={() => dialog.close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
         
         <div class="modal-conainer">
-
+			<h2>Crear nueva publicación</h2>
+			<form class="form">
+				<div class="input-box">
+					<label for="titulo">Titulo</label>
+					<input type="text" name="titulo" id="titulo" placeholder="Titulo de puclicaión" required>
+				</div>
+				<div class="input-box">
+					<label for="sinopsis">Sinopsis</label>
+					<input type="text" name="sinopsis" id="sinopsis" placeholder="Sinopsis de puclicaión" required>
+				</div>
+				
+				<div class="input-box">
+					<label for="trailer">Trailer</label>
+					<input type="text" name="trailer" id="trailer" placeholder="URL del trailer" required>
+				</div>
+				<div class="column">
+					<div class="input-box">
+						<label for="calif">Calificación</label>
+						<input type="text" name="calif" id="calif" placeholder="Calificación de la critica" required>
+					</div>
+					<div class="input-box">
+						<label for="categ">Categoria</label>
+						<input type="text" name="categ" id="categ" placeholder="Categoria" required>
+					</div>
+				</div>
+			</form>
         </div>
         
 		<!-- svelte-ignore a11y-autofocus -->
-		<i class='bx bxs-x-circle' on:click={() => dialog.close()}></i>
 	</div>
 </dialog>
 
 <style>
     .modal-conainer {
-        height: 50px;
-        width: 150px;
+        height: auto;
+        width: auto;
+		
     }
 
-dialog {
-        
+	.modal-conainer h2 {
+		color: var(--main-color);
+	}
+
+	form {
+		margin-top: 20px;
+	}
+
+	form .column {
+		display: flex;
+		column-gap: 10px;
+	}
+
+	form .input-box {
+		margin-top: 15px;
+	}
+
+	form .input-box label {
+		color: #333;
+		font-weight: 500;
+	}
+
+	form .input-box input {
+		position: relative;
+		height: 40px;
+		width: 100%;
+		padding: 0 15px;
+		outline: none;
+		border: 1px solid #ddd;
+		border-radius: 0.5rem;
+		font-size: 1rem;
+		font-weight: 500;
+		margin-top: 6px;
+	}
+
+	dialog {
         margin: auto;
 		max-width: 32em;
 		border-radius: 0.2em;

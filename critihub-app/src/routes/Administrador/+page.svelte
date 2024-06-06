@@ -87,7 +87,8 @@
   .crud-container {
     width: 100%;
     position: relative;
-    height: 80%;
+    height: 500px;
+    
   }
 
   .menu-btn {
