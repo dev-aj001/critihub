@@ -49,7 +49,7 @@ async function Mostrarreseña() {
 
           console.log(reseñas);
       items=[...reseñas];
-        
+        promedioCalif()
         
     });
 }
@@ -64,7 +64,7 @@ async function promedioCalif() {
 
         try {
             await updateDoc(doc(db, "Publicaciones", data.id), {
-                rating: promedio
+                ratingpromediado: promedio
             });
             console.log("Calificación Actualizada");
         } catch (error) {
@@ -85,7 +85,7 @@ async function promedioCalif() {
       Fecha:new Date().toLocaleDateString('es-ES')
       
     }); 
-     promedioCalif()
+     
     rsn='';
     rating2= writable(0);
     
@@ -118,9 +118,15 @@ Mostrarreseña()
         <!-- Text -->
         <div class="detail-text">
             <h2>{data.data.titulo}</h2>
-
+                <p>Critihub </p>
             <div class="rating">
+                
                 <Rating {rating} />
+            </div>
+            <p>Usuarios </p>
+             <div class="rating">
+                
+                <Rating  rating={data.data.ratingpromediado}/>
             </div>
             
             <div class="tags">

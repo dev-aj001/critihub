@@ -34,6 +34,10 @@
                     <h3>{item.data.rating}</h3>
                     <i class='bx bxs-star'></i>
                 </div>
+                <div class="rating {colorTag(item.data.ratingpromediado)}">
+                    <h3>{item.data.ratingpromediado}</h3>
+                    <i class='bx bxs-star'></i>
+                </div>
             </a>
         </div>
     </div>

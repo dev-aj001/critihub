@@ -4,20 +4,22 @@
     import { updateProfile } from "firebase/auth";
 
     let nombre = $user.displayName;
+    let email = $user.email;
 
+    
     const cambiarNombre = (n) => {
         updateProfile(auth.currentUser, {
-        displayName: n
+        displayName:n,
+        
         }).then(() => {
         // Profile updated!
         // ...
         console.log("Nombre actualizado");
         }).catch((error) => {
-        // An error occurred
-        // ...
+        console.log("Error de actulizacion");
         });
     }
-
+    
     $:console.log(nombre);
 
 </script>
@@ -38,9 +40,9 @@
                     <label for="nombre-input">Nombre completo</label>
                     <input type="text" id="nombre-input" bind:value={nombre}>
                     <label for="correo-input">Correo</label>
-                    <input type="text" id="correo-input" value={$user.email}>
+                    <input type="text" id="correo-input"  bind:value={email}>
                     <label for="edad-input">Edad</label>
-                    <input type="text" id="edad-input" value="22">
+                    <input type="text" id="edad-input" value=22>
                     <label for="genero-input">Genero</label>
                     <select name="" id="genero-input">
                         <option value="Masculino">Masculino</option>
