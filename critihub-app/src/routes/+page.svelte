@@ -42,7 +42,6 @@
         });
         items.reverse();
         $juegos = [...items];
-        console.log($juegos);
     });
 
     
