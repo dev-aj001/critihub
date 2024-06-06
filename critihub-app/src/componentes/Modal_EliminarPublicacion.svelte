@@ -23,8 +23,6 @@
 		}
 	}
 
-	$: fetchDoc($idP);
-
 </script>
 
 <dialog

@@ -3,7 +3,7 @@
     import "gridjs/dist/theme/mermaid.css";
     import { onMount } from "svelte";
     import { db } from "$lib/firebase";
-    import { goto } from '$app/navigation';
+    import { goto } from "$app/navigation";
     import {
         collection,
         query,
@@ -24,101 +24,109 @@
 
     var table;
     let grid = new Grid({
-        columns: ["id", "titulo", "categoria", "rating", {
-                    name: "Actions",
-                    sort: false,
-                    formatter: (cell, row) => {
-                        return h(
-                            "div",
-                            { className: "actions-container" },
-                            h(
-                                "button",
-                                {
-                                    className: "btn warning",
-                                    onClick: () => updateAction(row),
-                                },
-                                h(
-                                    "i",
-                                    {
-                                        className: "bx bxs-pencil tbl-btn"
-                                    }
-                                ),
-                            ),
-                            h(
-                                "button",
-                                {
-                                    className: "btn danger",
-                                    onClick: () => deleteAction(row),
-                                },
-                                h(
-                                    "i",
-                                    {
-                                        className: "bx bxs-trash tbl-btn "
-                                    }
-                                ),
-                            ),
-                            h(
-                                "button",
-                                {
-                                    className: "btn success",
-                                    onClick: () => viewAction(row),
-                                },
-                                h(
-                                    "i",
-                                    {
-                                        className: "bx bxs-binoculars tbl-btn "
-                                    }
-                                ),
-                            ),
-                        );
-                    },
-                },],
+        columns: [
+            "id",
+            "titulo",
+            "categoria",
+            "rating",
+            {
+                name: "Actions",
+                sort: false,
+                formatter: (cell, row) => {
+                    return h(
+                        "div",
+                        { className: "actions-container" },
+                        h(
+                            "button",
+                            {
+                                className: "btn warning",
+                                onClick: () => updateAction(row),
+                            },
+                            h("i", {
+                                className: "bx bxs-pencil tbl-btn",
+                            }),
+                        ),
+                        h(
+                            "button",
+                            {
+                                className: "btn danger",
+                                onClick: () => deleteAction(row),
+                            },
+                            h("i", {
+                                className: "bx bxs-trash tbl-btn ",
+                            }),
+                        ),
+                        h(
+                            "button",
+                            {
+                                className: "btn success",
+                                onClick: () => viewAction(row),
+                            },
+                            h("i", {
+                                className: "bx bxs-binoculars tbl-btn ",
+                            }),
+                        ),
+                    );
+                },
+            },
+        ],
         search: true,
         sort: true,
         height: "400px",
         resizable: true,
-        pagination: {limit: 5},
+        pagination: { limit: 5 },
         data: items,
+        language: {
+            search: {
+                placeholder: "Buscando...",
+            },
+            pagination: {
+                previous: "Anterior",
+                next: "Siguiente",
+                showing: "Mostrando",
+                results: () => "Resultados",
+            },
+        },
         style: {
-    table: {
-      border: 'none',
-      'font-size': '0.9rem',
-    },
-    th: {
-      'background-color': '#ff6d19',
-      color: '#fff',
-      'border-bottom': '3px solid #ccc',
-      'text-align': 'center'
-    },
-    td: {
-      'text-align': 'center',
-      'background-color': '#172c3a',
-      color: '#fff',
-    },
-    footer: {
-        'background-color': '#172c3a',
-        color: '#fff',
-    }
-    }
+            table: {
+                border: "none",
+                "font-size": "0.9rem",
+            },
+            th: {
+                "background-color": "#ff6d19",
+                color: "#fff",
+                "border-bottom": "3px solid #ccc",
+                "text-align": "center",
+            },
+            td: {
+                "text-align": "center",
+                "background-color": "#172c3a",
+                color: "#fff",
+            },
+            footer: {
+                "background-color": "#172c3a",
+                color: "#fff",
+            },
+        },
     });
 
     onMount(async () => {
         grid.render(table);
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const aItems = [];
-        querySnapshot.forEach((doc) => {
-            let i = [
-                doc.id,
-                doc.data().titulo,
-                doc.data().categoria,
-                doc.data().rating,
-            ];
-            aItems.push(i);
+            const aItems = [];
+            querySnapshot.forEach((doc) => {
+                let i = [
+                    doc.id,
+                    doc.data().titulo,
+                    doc.data().categoria,
+                    doc.data().rating,
+                ];
+                aItems.push(i);
+            });
+            items = [...aItems];
+            console.log(items);
+            updateTable();
         });
-        items = [...aItems];
-        console.log(items);
-        updateTable();
-    });
     });
 
     function updateTable() {
@@ -137,25 +145,29 @@
 
     async function updateAction(row) {
         $idP = row.cells[0].data;
-        showModal_EditarPublicacion=true;
+        showModal_EditarPublicacion = true;
     }
 
     async function deleteAction(row) {
         $idP = row.cells[0].data;
-        showModal_EliminarPublicacion=true;
+        showModal_EliminarPublicacion = true;
     }
-    
 </script>
 
-<ModalPublicacion bind:showModal_Pulicacion/>
-<ModalEditPublicacion bind:showModal_EditarPublicacion/>
-<ModalDeletePublicacion bind:showModal_EliminarPublicacion/>
+<ModalPublicacion bind:showModal_Pulicacion />
+<ModalEditPublicacion bind:showModal_EditarPublicacion />
+<ModalDeletePublicacion bind:showModal_EliminarPublicacion />
 
 <div class="table-container">
     <div class="add-container">
         <p>Agregar publicación</p>
-        <button class="add btn primary" on:click={()=>{showModal_Pulicacion=true}}>
-            <i class='bx bx-plus' ></i>
+        <button
+            class="add btn primary"
+            on:click={() => {
+                showModal_Pulicacion = true;
+            }}
+        >
+            <i class="bx bx-plus"></i>
         </button>
     </div>
     <div class="table" bind:this={table}></div>
@@ -189,7 +201,7 @@
         font-weight: 600;
     }
 
-    .add p{
+    .add p {
         font-size: 0.6rem;
     }
 </style>
