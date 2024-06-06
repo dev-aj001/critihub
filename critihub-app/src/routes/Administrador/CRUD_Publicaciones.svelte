@@ -17,7 +17,7 @@
     import ModalDeletePublicacion from "../../componentes/Modal_EliminarPublicacion.svelte";
     import { idP } from "$lib/stores.js";
 
-    let showModal_Pulicacion = false;
+    let showModal_Publicacion = false;
     let showModal_EditarPublicacion = false;
     let showModal_EliminarPublicacion = false;
     let items = [];
@@ -83,7 +83,9 @@
             pagination: {
                 previous: "Anterior",
                 next: "Siguiente",
-                showing: "Mostrando",
+                to: "a",
+                of: "de",
+                showing: "Mostrando de",
                 results: () => "Resultados",
             },
         },
@@ -154,7 +156,7 @@
     }
 </script>
 
-<ModalPublicacion bind:showModal_Pulicacion />
+<ModalPublicacion bind:showModal_Publicacion={showModal_Publicacion} />
 <ModalEditPublicacion bind:showModal_EditarPublicacion />
 <ModalDeletePublicacion bind:showModal_EliminarPublicacion />
 
@@ -164,7 +166,7 @@
         <button
             class="add btn primary"
             on:click={() => {
-                showModal_Pulicacion = true;
+                showModal_Publicacion = true;
             }}
         >
             <i class="bx bx-plus"></i>

@@ -52,12 +52,8 @@
     <img src="img/home-background.png" alt="home" class="home-img">
     <!-- Home text -->
     <div class="home-text">
-        <h1 class="home-title">PELICULA TITULO</h1>
-        <p>Fecha de salida 45-45-z45</p>
-        <a href="/Trailer" class="watch-btn">
-            <i class='bx bx-play' ></i>
-            <span>Watch the trailer!</span>
-        </a>
+        <h1 class="home-title">CRITI<span>HUB</span></h1>
+        <p>Series, Peliculas y Juegos</p>
     </div>
 </section>
 
@@ -98,6 +94,10 @@
     .home-text p{
         font-size: 0.93rem;
         margin: 10px 0 20px;
+        color: var(--text-color);
+    }
+
+    .home-text span {
         color: var(--main-color);
     }
     .watch-btn {

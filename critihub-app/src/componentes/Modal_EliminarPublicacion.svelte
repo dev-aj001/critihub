@@ -1,28 +1,38 @@
 <script>
 	import { idP } from "$lib/stores";
-	import { doc, getDoc } from "firebase/firestore";
+	import { doc, getDoc, deleteDoc } from "firebase/firestore";
 	import { db } from "$lib/firebase";
 
     export let showModal_EliminarPublicacion;
     let dialog;
+    let titulo = "";
+    let id = "";
 
+    // Mostrar el modal si la variable de control cambia
     $: if (dialog && showModal_EliminarPublicacion) dialog.showModal();
 
-	$: titulo = "";
-
+    // Observar cambios en idP y ejecutar fetchDoc cuando cambia
+    $: idP.subscribe(value => {
+        id = value;
+        if (id) {
+            fetchDoc(id);
+        }
+    });
 
 	async function fetchDoc(id){
+		if (!id || typeof id !== 'string') {
+			console.error('Invalid document ID');
+			return;
+		}
 		const docRef = doc(db, "Publicaciones", id);
 		const docSnap = await getDoc(docRef);
 
 		if (docSnap.exists()) {
 			titulo = docSnap.data().titulo;
 		} else {
-		// docSnap.data() will be undefined in this case
-		console.log("No such document!");
+			console.log("No such document!");
 		}
 	}
-
 </script>
 
 <dialog
@@ -35,12 +45,12 @@
         
         <div class="modal-conainer">
 			<h2>¿Seguro que deseas eliminar esta publicación?</h2>
-			<h5>ID: </h5><span>{$idP}</span>
+			<h5>ID: </h5><span>{id}</span>
 			<h5>Nombre: </h5><span>{titulo}</span>
         </div>
         <div class="actions">
 			<button class="btn danger" on:click={() => dialog.close()}>Cancelar</button>
-			<button class="btn success" on:click={() => dialog.close()}>Eliminar</button>
+			<button class="btn success" on:click={async() => {await deleteDoc(doc(db, "Publicaciones", id)).then(dialog.close()); }}>Eliminar</button>
 		</div>
 		<!-- svelte-ignore a11y-autofocus -->
 		 

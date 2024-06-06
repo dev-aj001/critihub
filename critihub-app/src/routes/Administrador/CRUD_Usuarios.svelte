@@ -60,6 +60,19 @@
                     },
                 },
             ],
+        language: {
+        search: {
+            placeholder: "Buscando...",
+        },
+        pagination: {
+            previous: "Anterior",
+            next: "Siguiente",
+            to: "a",
+            of: "de",
+            showing: "Mostrando de",
+            results: () => "Resultados",
+        },
+        },
         search: true,
         sort: true,
         height: "400px",

@@ -1,9 +1,9 @@
 <script>
-	import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
-	import { collection, addDoc } from "firebase/firestore"; 
+	import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+	import { collection, addDoc } from "firebase/firestore";
 	import { db } from "$lib/firebase";
 
-	export let showModal_Pulicacion;
+	export let showModal_Publicacion;
 	let dialog;
 	let inputCover;
 	let inputBanner;
@@ -15,58 +15,42 @@
 	let bannerURL;
 	const storage = getStorage();
 
-	let titulo;
-	let trailer;
-	let categoria;
-	let rating;
-	let tags = [];
-	let sinopsis;
+	let titulo = "";
+	let trailer = "";
+	let categoria = "";
+	let rating = "";
+	let tags = "";
+	let sinopsis = "";
 
-	$: if (dialog && showModal_Pulicacion) dialog.showModal();
+	$: if (dialog && showModal_Publicacion) dialog.showModal();
 
-	$:coverRef = ref(storage, `covers/${coverName}`);
-	$:bannerRef = ref(storage, `covers/${bannerName}`);
-
-	// async function uploadFiles(){
-	// 	uploadBytes(coverRef, inputCover.files[0]).then((snapshot) => {
-    //         console.log('Cover file uploaded!');
-    //         getDownloadURL(coverRef)
-    //             .then((url) => {
-    //                 coverURL = url;
-    //             })
-    //             .catch((error) => {
-    //                 // Handle any errors
-    //             });
-    //     });
-	// 	uploadBytes(bannerRef, inputBanner.files[0]).then((snapshot) => {
-    //         console.log('Banner file uploaded!');
-    //         getDownloadURL(bannerRef)
-    //             .then((url) => {
-    //                 bannerURL = url;
-    //             })
-    //             .catch((error) => {
-    //                 // Handle any errors
-    //             });
-    //     });
-	// }
+	$: coverRef = coverName ? ref(storage, `covers/${coverName}`) : null;
+	$: bannerRef = bannerName ? ref(storage, `banners/${bannerName}`) : null;
 
 	async function uploadFiles() {
 		try {
 			// Carga y obtención de URL para la portada (cover)
-			const coverSnapshot = await uploadBytes(coverRef, inputCover.files[0]);
-			console.log('Cover file uploaded!');
-			coverURL = await getDownloadURL(coverRef);
+			if (inputCover.files[0]) {
+				const coverSnapshot = await uploadBytes(coverRef, inputCover.files[0]);
+				console.log('Cover file uploaded!');
+				coverURL = await getDownloadURL(coverRef);
+			}
 
 			// Carga y obtención de URL para el banner
-			const bannerSnapshot = await uploadBytes(bannerRef, inputBanner.files[0]);
-			console.log('Banner file uploaded!');
-			bannerURL = await getDownloadURL(bannerRef);
+			if (inputBanner.files[0]) {
+				const bannerSnapshot = await uploadBytes(bannerRef, inputBanner.files[0]);
+				console.log('Banner file uploaded!');
+				bannerURL = await getDownloadURL(bannerRef);
+			}
 
 			// Aquí puedes proceder con el siguiente proceso, ya que ambas cargas han sido exitosas
 			console.log('Both files uploaded successfully:', { coverURL, bannerURL });
 			
 			// Realiza el siguiente proceso aquí
-			createPub();
+			await createPub();
+
+			// Restablecer el formulario después de subir los archivos
+			resetForm();
 
 		} catch (error) {
 			// Maneja cualquier error
@@ -74,8 +58,7 @@
 		}
 	}
 
-	async function createPub(){
-		// console.log(titulo, ', ' , trailer, ' ', coverURL, ' ', bannerURL, ' ', categoria, ' ', tags);
+	async function createPub() {
 		const docRef = await addDoc(collection(db, "Publicaciones"), {
 			titulo: titulo,
 			trailer: trailer,
@@ -88,6 +71,10 @@
 			ratingpromediado: "",
 		});
 
+		console.log("Document written with ID: ", docRef.id);
+	}
+
+	function resetForm() {
 		titulo = "";
 		trailer = "";
 		coverURL = "";
@@ -96,18 +83,24 @@
 		sinopsis = "";
 		rating = "";
 		tags = "";
-
-		console.log("Document written with ID: ", docRef.id);
+		inputCover.value = "";
+		inputBanner.value = "";
+		coverName = "";
+		bannerName = "";
+		coverView.style.backgroundImage = "";
+		coverView.style.backgroundColor = '';
+		coverView.innerHTML = `<img src="/img/Upload.png" style="margin-top: 20px; width: 50px;"/><p style="font-size: 0.9rem;">Arrastra y suelta o haz click aquí <br>para subir una imagen</p><span style="font-size: 0.4rem;">Sube cualquier imagen desde tu computadora</span>`;
+		bannerView.style.backgroundImage = "";
+		bannerView.style.backgroundColor = '';
+		bannerView.innerHTML = `<img src="/img/Upload.png" style="margin-top: 20px; width: 50px; /><p style="font-size: 0.9rem;">Arrastra y suelta o haz click aquí <br>para subir una imagen</p><span style="font-size: 0.4rem;">Sube cualquier imagen desde tu computadora</span>`;
 	}
-
-
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
 	bind:this={dialog}
-	on:close={() => (showModal_Pulicacion = false)}
+	on:close={() => (showModal_Publicacion = false)}
 	on:click|self={() => dialog.close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -121,9 +114,8 @@
 						type="text"
 						name="titulo"
 						id="titulo"
-						placeholder="Titulo de puclicaión"
+						placeholder="Titulo de publicación"
 						required
-
 						bind:value={titulo}
 					/>
 				</div>
@@ -133,12 +125,11 @@
 						name="textarea"
 						rows="5"
 						placeholder="Sinopsis de la publicacion"
-
 						bind:value={sinopsis}
 					></textarea>
 				</div>
 
-				<div class="input-box">
+				<div class="input-box" >
 					<label for="trailer">Trailer</label>
 					<input
 						type="text"
@@ -146,7 +137,6 @@
 						id="trailer"
 						placeholder="URL del trailer"
 						required
-
 						bind:value={trailer}
 					/>
 				</div>
@@ -159,7 +149,6 @@
 							id="calif"
 							placeholder="0-5"
 							required
-
 							bind:value={rating}
 						/>
 					</div>
@@ -182,11 +171,9 @@
 						id="tags"
 						placeholder="Etiqueta1, Etiquetas2, ..."
 						required
-
 						bind:value={tags}
 					/>
 				</div>
-
 
 				<!-- IMGs INPUTS  -->
 				<div class="img-drops">
@@ -201,26 +188,20 @@
 								required
 								hidden
 								bind:this={inputCover}
-								on:change={() =>{
+								on:change={() => {
 									let imgLink = URL.createObjectURL(inputCover.files[0]);
-									console.log(imgLink);
 									coverView.style.backgroundImage = `url(${imgLink})`;
 									coverView.style.backgroundColor = 'black';
 									coverView.textContent = "";
 									coverName = inputCover.files[0].name;
-									console.log(coverName);
 								}}
 							/>
 							<div class="img-view" bind:this={coverView}>
-								<!-- svelte-ignore a11y-missing-attribute -->
 								<img src="/img/Upload.png" />
 								<p>
-									Arrastra y suelta o haz click aquí <br
-									/>para subir una imagen
+									Arrastra y suelta o haz click aquí <br />para subir una imagen
 								</p>
-								<span
-									>Sube cualquier imagen desde tu computadora</span
-								>
+								<span>Sube cualquier imagen desde tu computadora</span>
 							</div>
 						</label>
 					</div>
@@ -236,25 +217,20 @@
 								required
 								hidden
 								bind:this={inputBanner}
-								on:change={() =>{
+								on:change={() => {
 									let imgLink = URL.createObjectURL(inputBanner.files[0]);
-									console.log(imgLink);
 									bannerView.style.backgroundImage = `url(${imgLink})`;
 									bannerView.style.backgroundColor = 'black';
 									bannerView.textContent = "";
 									bannerName = inputBanner.files[0].name;
-									console.log(bannerName);
 								}}
 							/>
 							<div class="img-view" bind:this={bannerView}>
 								<img src="/img/Upload.png" />
 								<p>
-									Arrastra y suelta o haz click aquí <br
-									/>para subir una imagen
+									Arrastra y suelta o haz click aquí <br />para subir una imagen
 								</p>
-								<span
-									>Sube cualquier imagen desde tu computadora</span
-								>
+								<span>Sube cualquier imagen desde tu computadora</span>
 							</div>
 						</label>
 					</div>
@@ -262,15 +238,12 @@
 
 				<div class="actions">
 					<button class="btn danger publicar" on:click|preventDefault={() => dialog.close()}>Cancelar</button>
-					<button type="submit" class="btn primary publicar" on:click={uploadFiles}>Publicar</button>
+					<button type="submit" class="btn primary publicar" on:click|preventDefault={uploadFiles}>Publicar</button>
 				</div>
 			</form>
 		</div>
-
-		<!-- svelte-ignore a11y-autofocus -->
 	</div>
 </dialog>
-
 <style>
 
 	.modal-conainer {
@@ -365,9 +338,9 @@
 	.img-view {
 		width: 100%;
 		height: 100%;
-		border-radius: 20px;
-		border: 2px dashed #bbb5ff;
-		background-color: #f7f8ff;
+		border-radius: 0.4rem;
+		border: 2px solid #999999;
+		background-color: #e7e7e7;
 		background-position: center;
 		background-size: contain;
 		background-repeat: no-repeat;
