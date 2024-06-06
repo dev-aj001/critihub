@@ -1,13 +1,104 @@
 <script>
+	import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
+	import { collection, addDoc } from "firebase/firestore"; 
+	import { db } from "$lib/firebase";
+
 	export let showModal_Pulicacion;
 	let dialog;
 	let inputCover;
 	let inputBanner;
 	let coverView;
 	let bannerView;
+	let coverName;
+	let bannerName;
+	let coverURL;
+	let bannerURL;
+	const storage = getStorage();
+
+	let titulo;
+	let trailer;
+	let categoria;
+	let rating;
+	let tags = [];
+	let sinopsis;
 
 	$: if (dialog && showModal_Pulicacion) dialog.showModal();
 
+	$:coverRef = ref(storage, `covers/${coverName}`);
+	$:bannerRef = ref(storage, `covers/${bannerName}`);
+
+	// async function uploadFiles(){
+	// 	uploadBytes(coverRef, inputCover.files[0]).then((snapshot) => {
+    //         console.log('Cover file uploaded!');
+    //         getDownloadURL(coverRef)
+    //             .then((url) => {
+    //                 coverURL = url;
+    //             })
+    //             .catch((error) => {
+    //                 // Handle any errors
+    //             });
+    //     });
+	// 	uploadBytes(bannerRef, inputBanner.files[0]).then((snapshot) => {
+    //         console.log('Banner file uploaded!');
+    //         getDownloadURL(bannerRef)
+    //             .then((url) => {
+    //                 bannerURL = url;
+    //             })
+    //             .catch((error) => {
+    //                 // Handle any errors
+    //             });
+    //     });
+	// }
+
+	async function uploadFiles() {
+		try {
+			// Carga y obtención de URL para la portada (cover)
+			const coverSnapshot = await uploadBytes(coverRef, inputCover.files[0]);
+			console.log('Cover file uploaded!');
+			coverURL = await getDownloadURL(coverRef);
+
+			// Carga y obtención de URL para el banner
+			const bannerSnapshot = await uploadBytes(bannerRef, inputBanner.files[0]);
+			console.log('Banner file uploaded!');
+			bannerURL = await getDownloadURL(bannerRef);
+
+			// Aquí puedes proceder con el siguiente proceso, ya que ambas cargas han sido exitosas
+			console.log('Both files uploaded successfully:', { coverURL, bannerURL });
+			
+			// Realiza el siguiente proceso aquí
+			createPub();
+
+		} catch (error) {
+			// Maneja cualquier error
+			console.error('Error uploading files:', error);
+		}
+	}
+
+	async function createPub(){
+		// console.log(titulo, ', ' , trailer, ' ', coverURL, ' ', bannerURL, ' ', categoria, ' ', tags);
+		const docRef = await addDoc(collection(db, "Publicaciones"), {
+			titulo: titulo,
+			trailer: trailer,
+			cover: coverURL,
+			banner: bannerURL,
+			categoria: categoria,
+			sinopsis: sinopsis,
+			rating: rating,
+			tags: tags.split(",").map((elemento) => elemento.trim()),
+			ratingpromediado: "",
+		});
+
+		titulo = "";
+		trailer = "";
+		coverURL = "";
+		bannerURL = "";
+		categoria = "";
+		sinopsis = "";
+		rating = "";
+		tags = "";
+
+		console.log("Document written with ID: ", docRef.id);
+	}
 
 
 </script>
@@ -32,6 +123,8 @@
 						id="titulo"
 						placeholder="Titulo de puclicaión"
 						required
+
+						bind:value={titulo}
 					/>
 				</div>
 				<div class="input-box">
@@ -40,6 +133,8 @@
 						name="textarea"
 						rows="5"
 						placeholder="Sinopsis de la publicacion"
+
+						bind:value={sinopsis}
 					></textarea>
 				</div>
 
@@ -51,6 +146,8 @@
 						id="trailer"
 						placeholder="URL del trailer"
 						required
+
+						bind:value={trailer}
 					/>
 				</div>
 				<div class="row">
@@ -62,12 +159,14 @@
 							id="calif"
 							placeholder="0-5"
 							required
+
+							bind:value={rating}
 						/>
 					</div>
 					<div class="input-box slt">
 						<label for="categ">Categoria</label>
 						<div class="select-box">
-							<select name="categ" id="categ">
+							<select name="categ" id="categ" bind:value={categoria}>
 								<option value="peliculas">peliculas</option>
 								<option value="series">series</option>
 								<option value="juegos">juegos</option>
@@ -83,6 +182,8 @@
 						id="tags"
 						placeholder="Etiqueta1, Etiquetas2, ..."
 						required
+
+						bind:value={tags}
 					/>
 				</div>
 
@@ -106,6 +207,8 @@
 									coverView.style.backgroundImage = `url(${imgLink})`;
 									coverView.style.backgroundColor = 'black';
 									coverView.textContent = "";
+									coverName = inputCover.files[0].name;
+									console.log(coverName);
 								}}
 							/>
 							<div class="img-view" bind:this={coverView}>
@@ -139,6 +242,8 @@
 									bannerView.style.backgroundImage = `url(${imgLink})`;
 									bannerView.style.backgroundColor = 'black';
 									bannerView.textContent = "";
+									bannerName = inputBanner.files[0].name;
+									console.log(bannerName);
 								}}
 							/>
 							<div class="img-view" bind:this={bannerView}>
@@ -157,7 +262,7 @@
 
 				<div class="actions">
 					<button class="btn danger publicar" on:click|preventDefault={() => dialog.close()}>Cancelar</button>
-					<button class="btn primary publicar">Publicar</button>
+					<button type="submit" class="btn primary publicar" on:click={uploadFiles}>Publicar</button>
 				</div>
 			</form>
 		</div>
