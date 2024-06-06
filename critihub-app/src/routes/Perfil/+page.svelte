@@ -40,7 +40,7 @@
                     <label for="nombre-input">Nombre completo</label>
                     <input type="text" id="nombre-input" bind:value={nombre}>
                     <label for="correo-input">Correo</label>
-                    <input type="text" id="correo-input"  bind:value={email}>
+                    <input type="text" id="correo-input"  bind:value={email} >
                     <label for="edad-input">Edad</label>
                     <input type="text" id="edad-input" value=22>
                     <label for="genero-input">Genero</label>

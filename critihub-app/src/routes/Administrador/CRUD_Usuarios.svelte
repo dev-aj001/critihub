@@ -3,8 +3,7 @@
     import "gridjs/dist/theme/mermaid.css";
     import { onMount } from "svelte";
     import { db } from "$lib/firebase";
-    import ModalCrear from "../../componentes/Modal_CrearPublicacion.svelte";
-    import ModalEditar from "../../componentes/Modal_EditarPublicacion.svelte";
+    import ModalEditar from "../../componentes/Modal_EditarUsuarios.svelte";
     import {
         collection,
         query,
@@ -13,7 +12,7 @@
         deleteDoc,
         doc,
     } from "firebase/firestore";
-
+    import { idu } from "$lib/stores.js";
     let items = [];
 
     var table;
@@ -132,22 +131,20 @@
 
     function editAction(row) {
         showModal2 = true;
-        // console.log("Edit action for", row.cells[0].data);
-        // Aquí puedes agregar la lógica de edición
+       $idu = row.cells[0].data;
+        showModal_EditarPublicacion = true;
+    }
+    
+   
+    async function deleteAction(row) {
+        $idu = row.cells[0].data;
     }
 
-    function deleteAction(row) {
-        console.log("Delete action for", row);
-        // Aquí puedes agregar la lógica de eliminación
-    }
-
-
-    var showModal1 = false;
     var showModal2 = false;
+    
 
 </script>
 
-<ModalCrear bind:showModal_Pulicacion={showModal1}/>
 <ModalEditar bind:showModal_EditarPublicacion={showModal2}/>
 <div class="table-container">
     <div class="table" bind:this={table}></div>
