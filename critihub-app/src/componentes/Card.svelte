@@ -4,11 +4,11 @@
 
     $: colorTag = (cal) => {
         if (cal < 2) {
-            return 'green';
+            return 'red';
         } else if (cal >= 2.5 && cal < 4) {
             return 'yellow';
         } else {
-            return 'red';
+            return 'green';
         }
     };
 

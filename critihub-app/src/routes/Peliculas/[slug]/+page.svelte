@@ -15,6 +15,7 @@
 
     let nombre = "Inicia sesión"; 
     let rsn = "";
+    
 
     console.log($isLoggedIn);
 
@@ -23,16 +24,31 @@
     }
 
     let text = "";
-
+    let items = []
     $:console.log(text);
-;
-   
+
+async function Mostrarreseña(){
+    const q = query(collection(db, "Publicaciones",data.id,"Reseñas"));
+    onSnapshot(q, (querySnapshot) => {
+    const reseñas = [];
+    querySnapshot.forEach((doc) => {
+      reseñas.push(doc.data());
+        });
+
+        console.log(reseñas);
+      items=[...reseñas];
+      console.log(items.Fecha);
+       
+    });
+}
  async function reseña() {
   try {
     const subcoleccionRef = collection(db,"Publicaciones",data.id, "Reseñas");
     await addDoc(subcoleccionRef, {
+      Nombre:nombre,
       Comentario: rsn,
       Calificacion: 5,
+      Fecha:new Date()
     });
     console.log('Datos agregados correctamente a la subcolección');
   } catch (error) {
@@ -41,7 +57,7 @@
 
   }
 
-
+Mostrarreseña()
 </script>
 
 
@@ -98,16 +114,18 @@
             </form>
         </div>
         <div class="post-comment">
+           {#each items as item} 
             <div class="list">
                 <div class="user">
                     <div class="user-image"> <img src="/img/user.jpg" alt="user"> </div>
                     <div class="user-meta">
-                        <div class="name"><p>Jose Lino</p></div>
+                        <div class="name"><p>{item.Nombre}</p></div>
                         <div class="day">hace 18 dias</div>
                     </div>
                 </div> 
-                <div class="comment-post">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu lacus et lacus interdum rutrum sit amet hendrerit diam. Morbi ut tempus felis, nec vehicula augue. Vivamus vel lectus aliquet, cursus quam ut, rutrum lectus. Nam id cursus urna. Nam a suscipit turpis. Aliquam congue arcu vitae arcu tristique, egestas sodales felis consectetur. Curabitur ornare metus non mi congue sodales. Phasellus molestie consequat metus sed consequat. </div>  
+                <div class="comment-post">{item.Comentario}</div>  
             </div>
+             {/each}
         </div>
     </div>
 </div>
