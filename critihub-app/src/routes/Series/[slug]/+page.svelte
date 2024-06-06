@@ -3,7 +3,7 @@
     import Rating from "../../../componentes/Rating_banner.svelte";
     import { isLoggedIn, isAdmin, user } from "$lib/stores.js";
     import Estrellas from  "../../../componentes/Rating_Stars.svelte";
-    import { query,collection,addDoc,getDocs,onSnapshot,doc, deleteDoc} from "firebase/firestore";
+    import { query,collection,addDoc,getDocs,onSnapshot,doc,updateDoc, deleteDoc} from "firebase/firestore";
     import {db } from "$lib/firebase";
     import { writable } from 'svelte/store';
 
@@ -23,6 +23,8 @@
     let rsn = "";
     let foto = "";
     let items = []
+    let valoresDeseados = 0
+    let promedioC = 0;
 
     console.log($isLoggedIn);
 
@@ -35,21 +37,45 @@
     
     $:console.log(text);
 
-async function Mostrarreseña(){
-    const q = query(collection(db, "Publicaciones",data.id,"Reseñas"));
-    onSnapshot(q, (querySnapshot) => {
-    const reseñas = [];
-    querySnapshot.forEach((doc) => {
-      reseñas.push(doc.data());
+async function Mostrarreseña() {
+    const q = query(collection(db, "Publicaciones", data.id, "Reseñas"));
+   
+
+    onSnapshot(q, async (querySnapshot) => {
+        const reseñas = [];
+        querySnapshot.forEach((doc) => {
+            reseñas.push(doc.data());
         });
 
-        console.log(reseñas);
+          console.log(reseñas);
       items=[...reseñas];
-       
+        
+        
     });
 }
+
+async function promedioCalif() {
+    let promedio = 0;
+    const valoresDeseados = items.map(items => items.Calificacion);
+        const sumaValores = valoresDeseados.reduce((total, valor) => total + valor, 0);
+        promedio = sumaValores / valoresDeseados.length;
+        promedio = parseFloat(promedio.toFixed(1));
+        console.log("El promedio es:", promedio);
+
+        try {
+            await updateDoc(doc(db, "Publicaciones", data.id), {
+                rating: promedio
+            });
+            console.log("Calificación Actualizada");
+        } catch (error) {
+            console.log("Error al actualizar la calificación:");
+        }
+}
+
+
  async function reseña() {
   try {
+    
     const subcoleccionRef = collection(db,"Publicaciones",data.id, "Reseñas");
     await addDoc(subcoleccionRef, {
       Nombre:nombre,
@@ -58,7 +84,8 @@ async function Mostrarreseña(){
       Calificacion: $rating2,
       Fecha:new Date().toLocaleDateString('es-ES')
       
-    });
+    }); 
+     promedioCalif()
     rsn='';
     rating2= writable(0);
     
@@ -75,8 +102,6 @@ async function Mostrarreseña(){
         
     }
 
-   
-   
 Mostrarreseña()
 
 </script>
@@ -104,7 +129,7 @@ Mostrarreseña()
                 {/each}
             </div>
 
-            <a href="#" class="watch-btn">
+            <a href={data.data.trailer} class="watch-btn" target="_blank">
                 <i class="bx bx-play" on:click={()=>{showModal = true}}></i>
                 <span>Mira el trailer!</span>
             </a>
@@ -122,7 +147,7 @@ Mostrarreseña()
     
     <div class="comment-session">
         <h3>Dejanos saber que piensas!</h3>
-        <p>¿Has visto esta pelicula? deja un comentario</p>
+        <br>
         <div class="comment-box">
            
             <div class="user">
