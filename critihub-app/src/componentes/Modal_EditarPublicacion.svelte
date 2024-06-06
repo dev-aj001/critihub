@@ -1,7 +1,8 @@
 <script>
 	import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-	import { collection, addDoc } from "firebase/firestore";
+	import { collection, updateDoc, doc, getDoc } from "firebase/firestore";
 	import { db } from "$lib/firebase";
+	import { idP } from "$lib/stores";
 
 	export let showModal_EditarPublicacion;
 	let dialog;
@@ -9,10 +10,10 @@
 	let inputBanner;
 	let coverView;
 	let bannerView;
-	let coverName;
-	let bannerName;
-	let coverURL;
-	let bannerURL;
+	let coverName = "";
+	let bannerName = "";
+	let coverURL = "";
+	let bannerURL = "";
 	const storage = getStorage();
 
 	let titulo = "";
@@ -21,16 +22,61 @@
 	let rating = "";
 	let tags = "";
 	let sinopsis = "";
-
+	let id = ""; 
+	
+	// Mostrar el modal si la variable de control cambia
 	$: if (dialog && showModal_EditarPublicacion) dialog.showModal();
 
-	$: coverRef = coverName ? ref(storage, `covers/${coverName}`) : null;
-	$: bannerRef = bannerName ? ref(storage, `banners/${bannerName}`) : null;
+	// Observar cambios en idP y ejecutar fetchDoc cuando cambia
+	$: idP.subscribe(value => {
+		id = value;
+		if (id) {
+			fetchDoc(id);
+		}
+	});
+
+	async function fetchDoc(id){
+		if (!id || typeof id !== 'string') {
+			console.error('Invalid document ID');
+			return;
+		}
+		const docRef = doc(db, "Publicaciones", id);
+		const docSnap = await getDoc(docRef);
+
+		if (docSnap.exists()) {
+			const data = docSnap.data();
+			titulo = data.titulo;
+			trailer = data.trailer;
+			categoria = data.categoria;
+			rating = data.rating;
+			sinopsis = data.sinopsis;
+			tags = data.tags.toString();
+			coverName = data.cover;
+			bannerName = data.banner;
+
+			if (coverName) {
+				coverView.style.backgroundImage = `url(${coverName})`;
+				coverView.style.backgroundColor = 'black';
+				coverView.textContent = "";
+			}
+
+			if (bannerName) {
+				bannerView.style.backgroundImage = `url(${bannerName})`;
+				bannerView.style.backgroundColor = 'black';
+				bannerView.textContent = "";
+			}
+
+		} else {
+			console.log("No such document!");
+		}
+	}
 
 	async function uploadFiles() {
 		try {
 			// Carga y obtención de URL para la portada (cover)
 			if (inputCover.files[0]) {
+				coverName = inputCover.files[0].name;
+				const coverRef = ref(storage, `covers/${coverName}`);
 				const coverSnapshot = await uploadBytes(coverRef, inputCover.files[0]);
 				console.log('Cover file uploaded!');
 				coverURL = await getDownloadURL(coverRef);
@@ -38,6 +84,8 @@
 
 			// Carga y obtención de URL para el banner
 			if (inputBanner.files[0]) {
+				bannerName = inputBanner.files[0].name;
+				const bannerRef = ref(storage, `banners/${bannerName}`);
 				const bannerSnapshot = await uploadBytes(bannerRef, inputBanner.files[0]);
 				console.log('Banner file uploaded!');
 				bannerURL = await getDownloadURL(bannerRef);
@@ -47,7 +95,7 @@
 			console.log('Both files uploaded successfully:', { coverURL, bannerURL });
 			
 			// Realiza el siguiente proceso aquí
-			await createPub();
+			await updatePub();
 
 			// Restablecer el formulario después de subir los archivos
 			resetForm();
@@ -58,20 +106,17 @@
 		}
 	}
 
-	async function createPub() {
-		const docRef = await addDoc(collection(db, "Publicaciones"), {
+	async function updatePub() {
+		await updateDoc(doc(db, "Publicaciones", id), {
 			titulo: titulo,
 			trailer: trailer,
-			cover: coverURL,
-			banner: bannerURL,
 			categoria: categoria,
 			sinopsis: sinopsis,
 			rating: rating,
 			tags: tags.split(",").map((elemento) => elemento.trim()),
-			ratingpromediado: "",
+			cover: coverURL,
+			banner: bannerURL,
 		});
-
-		console.log("Document written with ID: ", docRef.id);
 	}
 
 	function resetForm() {
@@ -92,7 +137,7 @@
 		coverView.innerHTML = `<img src="/img/Upload.png" style="margin-top: 20px; width: 50px;"/><p style="font-size: 0.9rem;">Arrastra y suelta o haz click aquí <br>para subir una imagen</p><span style="font-size: 0.4rem;">Sube cualquier imagen desde tu computadora</span>`;
 		bannerView.style.backgroundImage = "";
 		bannerView.style.backgroundColor = '';
-		bannerView.innerHTML = `<img src="/img/Upload.png" style="margin-top: 20px; width: 50px; /><p style="font-size: 0.9rem;">Arrastra y suelta o haz click aquí <br>para subir una imagen</p><span style="font-size: 0.4rem;">Sube cualquier imagen desde tu computadora</span>`;
+		bannerView.innerHTML = `<img src="/img/Upload.png" style="margin-top: 20px; width: 50px;" /><p style="font-size: 0.9rem;">Arrastra y suelta o haz click aquí <br>para subir una imagen</p><span style="font-size: 0.4rem;">Sube cualquier imagen desde tu computadora</span>`;
 	}
 </script>
 
@@ -218,6 +263,7 @@
 								hidden
 								bind:this={inputBanner}
 								on:change={() => {
+									bannerView.innerHTML = "";
 									let imgLink = URL.createObjectURL(inputBanner.files[0]);
 									bannerView.style.backgroundImage = `url(${imgLink})`;
 									bannerView.style.backgroundColor = 'black';
@@ -238,7 +284,7 @@
 
 				<div class="actions">
 					<button class="btn danger publicar" on:click|preventDefault={() => dialog.close()}>Cancelar</button>
-					<button type="submit" class="btn primary publicar" on:click|preventDefault={uploadFiles}>Publicar</button>
+					<button type="submit" class="btn primary publicar" on:click|preventDefault={uploadFiles}>Actualizar</button>
 				</div>
 			</form>
 		</div>
@@ -342,7 +388,7 @@
 		border: 2px solid #999999;
 		background-color: #e7e7e7;
 		background-position: center;
-		background-size: contain;
+		background-size: cover;
 		background-repeat: no-repeat;
 	}
 

@@ -342,7 +342,7 @@
 		border: 2px solid #999999;
 		background-color: #e7e7e7;
 		background-position: center;
-		background-size: contain;
+		background-size: cover;
 		background-repeat: no-repeat;
 	}
 
